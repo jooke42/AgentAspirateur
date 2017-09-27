@@ -5,8 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AgentAspirateur"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
+        Title="Environment" Width="670" Height="690" ResizeMode="NoResize">
     <Grid>
-        
+        <Image x:Name="mapImage" Height="640" Margin="10,10,0,0" Width="640" HorizontalAlignment="Left" VerticalAlignment="Top"/>
     </Grid>
 </Window>
