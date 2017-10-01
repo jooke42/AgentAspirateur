@@ -7,6 +7,7 @@ using System.Windows.Threading;
 using System.Timers;
 using System.Collections.Generic;
 
+
 namespace AgentAspirateur
 {
     /// <summary>
@@ -15,17 +16,27 @@ namespace AgentAspirateur
     public partial class MainWindow : Window
     {
         private Thread environmentThread;
-        private Environment environment;
+        private Thread agentThread;
+        static public Environment environment;
+        static private Agent.Agent agent;
         private readonly System.Timers.Timer _timer;
 
         public MainWindow()
         {
             InitializeComponent();
             environment = new Environment();
+            
+
             ThreadStart environmentThreadRef = new ThreadStart(environment.start);
             Console.WriteLine("In Main: Creating the Environment thread");
             this.environmentThread = new Thread(environmentThreadRef);
             environmentThread.Start();
+
+            agent = new Agent.Agent();
+            ThreadStart agentThreadRef = new ThreadStart(agent.Start);
+            Console.WriteLine("In Main: Creating the Agent thread");
+            this.agentThread = new Thread(agentThreadRef);
+            agentThread.Start();
 
             _timer = new System.Timers.Timer(2000); //Updates every 2 sec
             _timer.Elapsed += new ElapsedEventHandler(OnTimedEvent);
@@ -62,12 +73,16 @@ namespace AgentAspirateur
                     tileImage.ImageSource = new BitmapImage(
                 new Uri(@"Ressources\diamond.png", UriKind.Relative));
                     break;
-                case Tile.ROBOT:
-                    tileImage.ImageSource = new BitmapImage(
-                new Uri(@"Ressources\robot.png", UriKind.Relative));
-                    break;
             }
             return tileImage;
+        }
+        private ImageDrawing drawRobot(Position robot)
+        {
+            ImageDrawing robotImage = new ImageDrawing();
+            robotImage.Rect = new Rect(robot.x*64, robot.y*64, 64, 64);
+            robotImage.ImageSource = new BitmapImage(
+                new Uri(@"Ressources\robot.png", UriKind.Relative));
+            return robotImage;
         }
         private void Update()
         {
@@ -87,11 +102,15 @@ namespace AgentAspirateur
                     }
                 }
             }
+            imageDrawings.Children.Add(drawRobot(environment.robot));
+
             //
             // Use a DrawingImage and an Image control to
             // display the drawings.
             //
             DrawingImage drawingImageSource = new DrawingImage(imageDrawings);
+
+
 
             // Freeze the DrawingImage for performance benefits.
             drawingImageSource.Freeze();

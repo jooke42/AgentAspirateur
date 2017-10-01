@@ -7,15 +7,16 @@ using System.Threading;
 
 namespace AgentAspirateur
 {
-    public enum Tile { FLOOR, DUST, DIAMOND, ROBOT }
+    public enum Tile { FLOOR, DUST, DIAMOND }
 
     public struct Size
     {
         public int width, height;
     }
 
-    class Environment
+    public class Environment
     {
+        public Position robot;
         private List<Tile>[][] map;
         Random rnd = new Random();
 
@@ -26,6 +27,7 @@ namespace AgentAspirateur
 
         public void init()
         {
+            this.robot = new Position(5, 5);
             this.map = new List<Tile>[10][];
             for (int i = 0; i < map.Length; i++)
             {
