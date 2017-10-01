@@ -10,12 +10,12 @@ namespace AgentAspirateur.Agent
     public class DiamondSensor : Sensors
     {
         override
-         public Boolean check(int x, int y, Tile[,] map)
+         public Boolean check(int x, int y, List<Tile>[][] map)
         {
-            return map[x, y] == Tile.JEWELRY_FLOOR;
+            return map[x][y].Contains(Tile.DIAMOND);
         }
         override
-        public List<Position> getPosition(Tile[,] map)
+        public List<Position> getPosition(List<Tile>[][] map)
         {
             List<Position> position = new List<Position>();
 
@@ -23,7 +23,7 @@ namespace AgentAspirateur.Agent
             {                
                 for (int j = 0; j < map.GetLength(1); j++)
                 {
-                    if (map[i, j] == Tile.JEWELRY_FLOOR)
+                    if (map[i][j].Contains(Tile.DIAMOND))
                         position.Add(new Position(i, j));
 
                 }

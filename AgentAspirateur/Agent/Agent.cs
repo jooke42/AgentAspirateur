@@ -10,8 +10,9 @@ namespace AgentAspirateur.Agent
     {
         private Random rdm= new Random();
         public DustSensor dustSensors;
+        public DiamondSensor diamondSensor;
 
-       public Agent()
+        public Agent()
         {
 
         }

@@ -10,15 +10,14 @@ namespace AgentAspirateur.Agent
     {
 
         override
-        public Boolean check(int x, int y, Tile[,] map)
+        public Boolean check(int x, int y, List<Tile>[][] map)
         {
-
-            return map[x, y] == Tile.DIRTY_FLOOR;
+            return map[x][y].Contains(Tile.DUST);
             
         }
 
         override
-      public List<Position> getPosition(Tile[,] map)
+      public List<Position> getPosition(List<Tile>[][] map)
         {
             List<Position> position = new List<Position>();
 
@@ -26,7 +25,7 @@ namespace AgentAspirateur.Agent
             {
                 for (int j = 0; j < map.GetLength(1); j++)
                 {
-                    if (map[i, j] == Tile.DIRTY_FLOOR)
+                    if (map[i][j].Contains(Tile.DUST))
                         position.Add(new Position(i, j));
 
                 }

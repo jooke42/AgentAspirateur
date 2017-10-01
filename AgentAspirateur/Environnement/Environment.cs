@@ -3,14 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
-using System.Windows.Controls;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
 
 
 namespace AgentAspirateur
 {
-    enum Tile { CLEAN_FLOOR,DIRTY_FLOOR, JEWELRY_FLOOR}
+    public enum Tile { FLOOR, DUST, DIAMOND, ROBOT }
 
     public struct Size
     {
@@ -19,8 +16,7 @@ namespace AgentAspirateur
 
     class Environment
     {
-        private Tile[,] map;
-        int[] robotPosition;
+        private List<Tile>[][] map;
         Random rnd = new Random();
 
         public Environment()
@@ -30,12 +26,13 @@ namespace AgentAspirateur
 
         public void init()
         {
-            this.map = new Tile[10,10];
-            for (int i = 0; i < map.GetLength(0); i++)
+            this.map = new List<Tile>[10][];
+            for (int i = 0; i < map.Length; i++)
             {
-                for (int j = 0; j < map.GetLength(1); j++)
+                this.map[i] = new List<Tile>[10];
+                for (int j = 0; j < map[i].Length; j++)
                 {
-                    map[i, j] = Tile.CLEAN_FLOOR;
+                    map[i][j] = new List<Tile>() { Tile.FLOOR };
                 }
             }
 
@@ -45,10 +42,8 @@ namespace AgentAspirateur
             while (true)
             {
                 Thread.Sleep(2000);
-                generateRandom(Tile.DIRTY_FLOOR, 0, 2);
-                Thread.Sleep(2000);
-                generateRandom(Tile.JEWELRY_FLOOR, 0, 2);
-
+                generateRandom(Tile.DUST, 0, 2);
+                
             }
         }
         public void generateRandom(Tile tile,int min, int max)
@@ -58,16 +53,16 @@ namespace AgentAspirateur
             {
                 int x = rnd.Next(0, 10);
                 int y = rnd.Next(0, 10);
-                if(map[x,y] == Tile.CLEAN_FLOOR)
+                if (!map[x][y].Contains(tile)) 
                 {
-                    map[x, y] = tile;
+                    map[x][y].Add(tile);
                     nbToCreate--;
                     Console.WriteLine("generating dirt at (" + x + ";" + y + ")");
                 }
             }
         }
 
-        public Tile[,] getMap()
+        public List<Tile>[][] getMap()
         {
             return this.map;
         }
@@ -81,7 +76,7 @@ namespace AgentAspirateur
                 s += "|";
                 for (int j = 0; j < map.GetLength(1); j++)
                 {
-                    s += "\t" + map[i, j] + "\t|";
+                    s += "\t" + map[i][j].ToString() + "\t|";
                 }
             }
             return s;

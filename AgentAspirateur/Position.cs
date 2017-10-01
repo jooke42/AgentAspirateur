@@ -9,6 +9,7 @@ namespace AgentAspirateur
     public enum direction { NORTH, EAST,SOUTH,WEST}
 
     public class Position
+
     {
         public int x, y;
 

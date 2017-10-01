@@ -5,6 +5,7 @@ using System.Windows.Media.Imaging;
 using System.Threading;
 using System.Windows.Threading;
 using System.Timers;
+using System.Collections.Generic;
 
 namespace AgentAspirateur
 {
@@ -40,42 +41,50 @@ namespace AgentAspirateur
             new TimerDispatcherDelegate(Update));
             
         }
+
         private delegate void TimerDispatcherDelegate();
-        
+
+        private ImageDrawing drawSprite(int x, int y,Tile tile)
+        {
+            ImageDrawing tileImage = new ImageDrawing();
+            tileImage.Rect = new Rect(x, y, 64, 64);
+            switch (tile)
+            {
+                case Tile.FLOOR:
+                    tileImage.ImageSource = new BitmapImage(
+                new Uri(@"Ressources\sol_parquet_with_border.png", UriKind.Relative));
+                    break;
+                case Tile.DUST:
+                    tileImage.ImageSource = new BitmapImage(
+                new Uri(@"Ressources\dust.png", UriKind.Relative));
+                    break;
+                case Tile.DIAMOND:
+                    tileImage.ImageSource = new BitmapImage(
+                new Uri(@"Ressources\diamond.png", UriKind.Relative));
+                    break;
+                case Tile.ROBOT:
+                    tileImage.ImageSource = new BitmapImage(
+                new Uri(@"Ressources\robot.png", UriKind.Relative));
+                    break;
+            }
+            return tileImage;
+        }
         private void Update()
         {
             int x, y;
-            Tile[,] map = environment.getMap();
+            List<AgentAspirateur.Tile>[][] map = environment.getMap();
             DrawingGroup imageDrawings = new DrawingGroup();
-            for (int i = 0; i < map.GetLength(0); i++)
+            for (int i = 0; i < map.Length; i++)
             {
-                for (int j = 0; j < map.GetLength(1); j++)
+                for (int j = 0; j < map[i].Length; j++)
                 {
                     x = i * 64;
                     y = j * 64;
-                    ImageDrawing tile = new ImageDrawing();
-                    tile.Rect = new Rect(x, y, 64, 64);
-                    tile.ImageSource = new BitmapImage(
-                        new Uri(@"Ressources\sol_parquet_with_border.png", UriKind.Relative));
-                    imageDrawings.Children.Add(tile);
 
-                    tile = new ImageDrawing();
-                    tile.Rect = new Rect(x, y, 64, 64);
-                    switch (map[i, j])
+                    foreach(Tile t in map[i][j])
                     {
-                        case Tile.DIRTY_FLOOR:
-                            Console.WriteLine("drawing dirty floor at ("+i+";"+j+")");
-                            tile.ImageSource = new BitmapImage(
-                        new Uri(@"Ressources\dust.png", UriKind.Relative));
-                            break;
-                        case Tile.JEWELRY_FLOOR:
-                            tile.ImageSource = new BitmapImage(
-                        new Uri(@"Ressources\diamond.png", UriKind.Relative));
-                            break;
+                        imageDrawings.Children.Add(drawSprite(x, y, t));
                     }
-                    
-                    imageDrawings.Children.Add(tile);
-                    
                 }
             }
             //

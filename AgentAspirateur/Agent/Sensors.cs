@@ -9,8 +9,8 @@ namespace AgentAspirateur.Agent
    public abstract class Sensors
     {
 
-        public abstract Boolean check(int x, int y, Tile[,] map);
-        public abstract List<Position> getPosition(Tile[,] map);
+        public abstract Boolean check(int x, int y, List<Tile>[][] map);
+        public abstract List<Position> getPosition(List<Tile>[][] map);
 
     }
 }
