@@ -20,10 +20,10 @@ namespace AgentAspirateur.Agent
                 case Action.VACUUM:
                     vacuumDust(robot.x, robot.y);
                     break;
-                case Action.UP:
-                case Action.DOWN:
-                case Action.RIGHT:
-                case Action.LEFT:
+                case Action.NORTH:
+                case Action.SOUTH:
+                case Action.EAST:
+                case Action.WEST:
                     move(action,robot);
                     break;
             }
@@ -33,17 +33,21 @@ namespace AgentAspirateur.Agent
 
             switch (movement)
             {
-                case Action.UP:
-                    Console.WriteLine("UP");
+                case Action.NORTH:
+                    Console.WriteLine("NORTH");
+                    MainWindow.environment.addEvent("MOVE:NORTH");
                     break;
-                case Action.DOWN:
-                    Console.WriteLine("DOWN");
+                case Action.SOUTH:
+                    Console.WriteLine("SOUTH");
+                    MainWindow.environment.addEvent("MOVE:SOUTH");
                     break;
-                case Action.RIGHT:
-                    Console.WriteLine("RIGHT");
+                case Action.EAST:
+                    Console.WriteLine("EAST");
+                    MainWindow.environment.addEvent("MOVE:EAST");
                     break;
-                case Action.LEFT:
-                    Console.WriteLine("LEFT");
+                case Action.WEST:
+                    Console.WriteLine("WEST");
+                    MainWindow.environment.addEvent("MOVE:WEST");
                     break;
             }
             
