@@ -29,7 +29,7 @@ namespace AgentAspirateur
                     break;
                 default:
                     throw new Exception("string is not NORTH, SOUTH, EAST, WEST");
-                    break;
+                    
             }
             return d;
         }

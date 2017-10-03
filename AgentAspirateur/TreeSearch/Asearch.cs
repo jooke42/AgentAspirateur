@@ -44,8 +44,7 @@ namespace AgentAspirateur.TreeSearch
             return null;
 
         }
-              
-       
+                  
 
 
         private List<Position> adjacentSquares(Position currentPosition)
