@@ -25,7 +25,7 @@ namespace AgentAspirateur
         {
             InitializeComponent();
             environment = new Environment();
-            
+
 
             ThreadStart environmentThreadRef = new ThreadStart(environment.start);
             Console.WriteLine("In Main: Creating the Environment thread");
@@ -38,11 +38,11 @@ namespace AgentAspirateur
             this.agentThread = new Thread(agentThreadRef);
             agentThread.Start();
 
-            _timer = new System.Timers.Timer(2000); //Updates every 2 sec
+            _timer = new System.Timers.Timer(250); //Updates every 2 sec
             _timer.Elapsed += new ElapsedEventHandler(OnTimedEvent);
             _timer.Start();
-            
-        
+
+
         }
 
         private void OnTimedEvent(object source, ElapsedEventArgs e)
@@ -50,12 +50,12 @@ namespace AgentAspirateur
 
             this.Dispatcher.Invoke(DispatcherPriority.Normal,
             new TimerDispatcherDelegate(Update));
-            
+
         }
 
         private delegate void TimerDispatcherDelegate();
 
-        private ImageDrawing drawSprite(int x, int y,Tile tile)
+        private ImageDrawing drawSprite(int x, int y, Tile tile)
         {
             ImageDrawing tileImage = new ImageDrawing();
             tileImage.Rect = new Rect(x, y, 64, 64);
@@ -79,7 +79,7 @@ namespace AgentAspirateur
         private ImageDrawing drawRobot(Position robot)
         {
             ImageDrawing robotImage = new ImageDrawing();
-            robotImage.Rect = new Rect(robot.x*64, robot.y*64, 64, 64);
+            robotImage.Rect = new Rect(robot.x * 64, robot.y * 64, 64, 64);
             robotImage.ImageSource = new BitmapImage(
                 new Uri(@"Ressources\robot.png", UriKind.Relative));
             return robotImage;
@@ -96,7 +96,7 @@ namespace AgentAspirateur
                     x = i * 64;
                     y = j * 64;
 
-                    foreach(Tile t in map[i][j])
+                    foreach (Tile t in map[i][j])
                     {
                         imageDrawings.Children.Add(drawSprite(x, y, t));
                     }
@@ -121,10 +121,11 @@ namespace AgentAspirateur
             mapImage.BeginInit();
             mapImage.Stretch = Stretch.None;
             mapImage.Source = drawingImageSource;
-            
+
             mapImage.EndInit();
 
         }
+
+        
     }
-    
 }
