@@ -63,9 +63,12 @@
       <SubType>Designer</SubType>
     </Page>
     <Compile Include="Agent\Agent.cs" />
+    <Compile Include="Agent\Node.cs" />
+    <Compile Include="Agent\IterativeDeepeningSearch.cs" />
     <Compile Include="Agent\DiamondSensor.cs" />
     <Compile Include="Agent\DustSensor.cs" />
     <Compile Include="Agent\Effectors.cs" />
+    <Compile Include="Agent\Tree.cs" />
     <Compile Include="Agent\Sensors.cs" />
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
