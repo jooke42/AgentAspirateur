@@ -44,5 +44,10 @@ namespace AgentAspirateur
         {
             return xlim < this.x && ylim < this.y;
         }
+
+        public bool validPosition()
+        {
+            return validPosition(10, 10);
+        }
     }
 }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
+using AgentAspirateur.TreeSearch;
 
 namespace AgentAspirateur.Agent
 {
@@ -17,7 +18,10 @@ namespace AgentAspirateur.Agent
         private Random rdm= new Random();
         public DustSensor dustSensors;
         public DiamondSensor diamondSensor;
+        private TreeSearch.TreeSearch treeSearch;
         Boolean Alive;
+
+       
 
         public Agent()
         {
@@ -107,5 +111,7 @@ namespace AgentAspirateur.Agent
         {
 
         }
+
+        
     }
 }
