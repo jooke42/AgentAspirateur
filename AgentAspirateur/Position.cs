@@ -8,10 +8,42 @@ namespace AgentAspirateur
 {
     public enum direction { NORTH, EAST,SOUTH,WEST}
 
+    public static class DirectionMethod
+    {
+        public static direction directionFromString(String dirS)
+        {
+            direction d;
+            switch (dirS)
+            {
+                case "NORTH":
+                    d = direction.NORTH;
+                    break;
+                case "SOUTH":
+                    d = direction.SOUTH;
+                    break;
+                case "EAST":
+                    d = direction.EAST;
+                    break;
+                case "WEST":
+                    d = direction.WEST;
+                    break;
+                default:
+                    throw new Exception("string is not NORTH, SOUTH, EAST, WEST");
+                    
+            }
+            return d;
+        }
+    }
     public class Position
 
     {
         public int x, y;
+
+        public Position(Position p)
+        {
+            this.x = p.x;
+            this.y = p.y;
+        }
 
         public Position(int _x, int _y)
         {
@@ -42,7 +74,12 @@ namespace AgentAspirateur
         }
         public bool validPosition(int xlim,int ylim)
         {
-            return xlim < this.x && ylim < this.y;
+            return xlim > this.x && this.x >= 0 && this.y >= 0 && ylim > this.y;
+        }
+
+        public bool validPosition()
+        {
+            return validPosition(10, 10);
         }
     }
 }

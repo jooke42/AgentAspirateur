@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
+using AgentAspirateur.TreeSearch;
 
 namespace AgentAspirateur.Agent
 {
-    public enum Action { UP,DOWN,LEFT,RIGHT,VACUUM,PICK}
+    public enum Action { NORTH,SOUTH,EAST,WEST,VACUUM,PICK}
     public class Agent
     {
         private Position position;
@@ -17,7 +18,10 @@ namespace AgentAspirateur.Agent
         private Random rdm= new Random();
         public DustSensor dustSensors;
         public DiamondSensor diamondSensor;
+        private TreeSearch.TreeSearch treeSearch;
         Boolean Alive;
+
+       
 
         public Agent()
         {
@@ -52,7 +56,7 @@ namespace AgentAspirateur.Agent
         {
             //Observe son envionnement
             belief = MainWindow.environment.getMap();
-
+            position = new Position(MainWindow.environment.robot);
             while (Alive)
             {
 
@@ -65,12 +69,12 @@ namespace AgentAspirateur.Agent
                     updatBelief();
 
                     //Choisit une action
-                    intention.Enqueue(Action.LEFT);
+                    intention.Enqueue(Action.EAST);
                     //Execute son action
                     Effectors.executeAction(intention.Dequeue(), position);
                 }
 
-                Thread.Sleep(1000);
+                Thread.Sleep(2000);
             }
 
 
@@ -107,5 +111,7 @@ namespace AgentAspirateur.Agent
         {
 
         }
+
+        
     }
 }

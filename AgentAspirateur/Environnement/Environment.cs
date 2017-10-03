@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
-
+using System.Timers;
 
 namespace AgentAspirateur
 {
@@ -12,26 +12,43 @@ namespace AgentAspirateur
     public struct Size
     {
         public int width, height;
+        public Size(int w,int h)
+        {
+            this.width = w;
+            this.height = h;
+        }
     }
 
     public class Environment
     {
+        private Queue<string> events = new Queue<string>();
         public Position robot;
         private List<Tile>[][] map;
-        Random rnd = new Random();
+        Random rndDust = new Random();
+        Random rndDiamond = new Random(9);
+        Size sizeMap;
+        private readonly System.Timers.Timer _timerDust;
+        private readonly System.Timers.Timer _timerDiamond;
 
         public Environment()
         {
             init();
+            _timerDust = new System.Timers.Timer(5000); //Updates every 2 sec
+            _timerDust.Elapsed += new System.Timers.ElapsedEventHandler(OnTimedEventDust);
+
+            _timerDiamond = new System.Timers.Timer(7000); //Updates every 2 sec
+            _timerDust.Elapsed += new System.Timers.ElapsedEventHandler(OnTimedEventDiamond);
         }
+
 
         public void init()
         {
+            this.sizeMap = new Size(10, 10);
             this.robot = new Position(5, 5);
-            this.map = new List<Tile>[10][];
+            this.map = new List<Tile>[sizeMap.width][];
             for (int i = 0; i < map.Length; i++)
             {
-                this.map[i] = new List<Tile>[10];
+                this.map[i] = new List<Tile>[sizeMap.height];
                 for (int j = 0; j < map[i].Length; j++)
                 {
                     map[i][j] = new List<Tile>() { Tile.FLOOR };
@@ -39,27 +56,92 @@ namespace AgentAspirateur
             }
 
         }
+
+        private void OnTimedEventDust(object source, ElapsedEventArgs e)
+        {
+
+            generateRandomDust();
+
+        }
+
+        private void OnTimedEventDiamond(object source, ElapsedEventArgs e)
+        {
+
+            generateRandomDiamond();
+
+        }
         public void start()
         {
+            _timerDust.Start();
+            _timerDiamond.Start();
+
             while (true)
             {
-                Thread.Sleep(2000);
-                generateRandom(Tile.DUST, 0, 2);
+                Thread.Sleep(500);
+                while (events.Count != 0)
+                {
+                    string evt = events.Dequeue();
+                  /**
+                         * PICK:X:Y
+                         * VACUUM:X:Y
+                         * MOVE:LEFT
+                         */
+                        string[] parsedEvent = evt.Split(':');
+                        string action = parsedEvent[0];
+                        int x, y;
+                        string move;
+                        Position newPos;
+                        switch (action)
+                        {
+                            case "PICK":
+                                x = int.Parse(parsedEvent[1]);
+                                y = int.Parse(parsedEvent[2]);
+                                map[x][y].Remove(Tile.DUST);
+                                break;
+                            case "VACUUM":
+                                x = int.Parse(parsedEvent[1]);
+                                y = int.Parse(parsedEvent[2]);
+                                map[x][y].Remove(Tile.DIAMOND);
+                                break;
+                            case "MOVE":
+                                move = parsedEvent[1];
+                                newPos = this.robot.getPositionInDirection(DirectionMethod.directionFromString(move));
+                                if (newPos.validPosition(this.sizeMap.width, this.sizeMap.height))
+                                    robot = newPos;
+                                break;
+                        }
+                    
+                }
                 
             }
         }
-        public void generateRandom(Tile tile,int min, int max)
+        public void generateRandomDust()
         {
-            int nbToCreate = rnd.Next(min, max);
-            while(nbToCreate > 0)
+            int nbToCreate = rndDust.Next(0, 2);
+            while (nbToCreate > 0)
             {
-                int x = rnd.Next(0, 10);
-                int y = rnd.Next(0, 10);
-                if (!map[x][y].Contains(tile)) 
+                int x = rndDust.Next(0, 10);
+                int y = rndDust.Next(0, 10);
+                if (!map[x][y].Contains(Tile.DUST))
                 {
-                    map[x][y].Add(tile);
+                    map[x][y].Add(Tile.DUST);
                     nbToCreate--;
                     Console.WriteLine("generating dirt at (" + x + ";" + y + ")");
+                }
+            }
+        }
+        public void generateRandomDiamond()
+        {
+            int nbToCreate = rndDiamond.Next(0, 2);
+            while(nbToCreate > 0)
+            {
+                int x = rndDiamond.Next(0, 10);
+                int y = rndDiamond.Next(0, 10);
+                if (!map[x][y].Contains(Tile.DIAMOND)) 
+                {
+                    map[x][y].Add(Tile.DIAMOND);
+                    nbToCreate--;
+                    Console.WriteLine("generating Diamond at (" + x + ";" + y + ")");
                 }
             }
         }
@@ -68,8 +150,13 @@ namespace AgentAspirateur
         {
             return this.map;
         }
-        
-        
+
+        public void addEvent(String _event)
+        {
+            this.events.Enqueue(_event);
+        }
+
+
         public string toString()
         {
             string s = "";
@@ -83,6 +170,8 @@ namespace AgentAspirateur
             }
             return s;
         }
+
+       
 
 
     }
