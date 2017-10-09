@@ -9,53 +9,40 @@ namespace AgentAspirateur.Agent
     class Node
     {
 
-        private Node North;
-        private Node South;
-        private Node East;
-        private Node West;
-        private bool Dust;
-        private bool Diamond;
-
+        private HashSet<Node> neighboors = new HashSet<Node>();
+        private bool dust;
+        private bool diamond;
+        int x, y;
 
         public Node() {
-
-            North = null;
-            South = null;
-            West = null;
-            East = null;
-            Dust = false;
-            Diamond = false;
-
+            dust = false;
+            diamond = false;
         }
 
-        public Node(Node pNorth, Node pSouth, Node pWest, Node pEast, bool pDust, bool pDiamond)
+        public Node(int _x, int _y, bool _dust, bool _diamond)
         {
+            this.x = _x;
+            this.y = _y;
+            dust = _dust;
+            diamond = _diamond;
+        }
+        
+        public bool hasDust() { return dust; }
+        public bool hasDiamond() { return diamond; }
 
-            North = pNorth;
-            South = pSouth;
-            West = pWest;
-            East = pEast;
-            Dust = pDust;
-            Diamond = pDiamond;
-
+        public void addNeighboor(Node n)
+        {
+            this.neighboors.Add(n);
+            n.neighboors.Add(this);
+        }
+        public void removeNeighboor(Node n)
+        {
+            this.neighboors.Remove(n);
+            n.neighboors.Remove(this);
         }
 
-        public Node getNorth() { return North; }
-        public Node getSouth() { return South; }
-        public Node getEast() { return East; }
-        public Node getWest() { return West; }
-        public bool hasDust() { return Dust; }
-        public bool hasDiamond() { return Diamond; }
-
-
-
-
-        public void setNorth(Node pNorth) { North = pNorth; }
-        public void setSouth(Node pSouth) { South = pSouth; }
-        public void setEast(Node pEast) { East = pEast; }
-        public void setWest(Node pWest) { West=pWest; }
-        public void setDust(bool pDust) {Dust = pDust; }
-        public void setDiamond(bool pDiamond) { Diamond=pDiamond; }
+        public void setDust(bool pDust) {dust = pDust; }
+        public void setDiamond(bool pDiamond) { diamond = pDiamond; }
 
     }
 }

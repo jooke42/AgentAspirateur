@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace AgentAspirateur.Agent
 {
-    interface ITree
+    interface SearchLogic
     {
-        Node SearchPath(Node nod);
-
+        Node SearchPath(Node Start , Node Goal, Graph g);
     }
 }

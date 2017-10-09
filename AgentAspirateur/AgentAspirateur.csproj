@@ -58,6 +58,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Agent\Graph.cs" />
     <Compile Include="TreeSearch\Asearch.cs" />
     <Compile Include="TreeSearch\TreeSearch.cs" />
     <Page Include="MainWindow.xaml">
@@ -70,7 +71,7 @@
     <Compile Include="Agent\DiamondSensor.cs" />
     <Compile Include="Agent\DustSensor.cs" />
     <Compile Include="Agent\Effectors.cs" />
-    <Compile Include="Agent\Tree.cs" />
+    <Compile Include="Agent\SearchLogic.cs" />
     <Compile Include="Agent\Sensors.cs" />
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>

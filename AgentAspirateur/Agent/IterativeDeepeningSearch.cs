@@ -11,13 +11,13 @@ namespace AgentAspirateur.Agent
 
     
 
-    class IterativeDeepeningSearch : ITree
+    class IterativeDeepeningSearch : SearchLogic
     {
 
         public const bool NOT_EMPTY = true;
 
 
-        Node ITree.SearchPath(Node nod) {
+        Node SearchPath(Node nod) {
 
             int detph = 0;
             Node result = null;
@@ -59,5 +59,9 @@ namespace AgentAspirateur.Agent
 
         }
 
+        public Node SearchPath(Node Start, Node Goal, Graph g)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
