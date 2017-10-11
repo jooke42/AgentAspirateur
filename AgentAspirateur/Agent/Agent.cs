@@ -8,7 +8,7 @@ using AgentAspirateur.TreeSearch;
 
 namespace AgentAspirateur.Agent
 {
-    public enum Action { NORTH,SOUTH,EAST,WEST,VACUUM,PICK}
+    
     public class Agent
     {
         private Position position;
@@ -18,7 +18,7 @@ namespace AgentAspirateur.Agent
         private Random rdm= new Random();
         public DustSensor dustSensors;
         public DiamondSensor diamondSensor;
-        private TreeSearch.TreeSearch treeSearch;
+        private SearchStrategy searchLogic = new IterativeDeepeningSearch();
         Boolean Alive;
 
        
@@ -54,9 +54,9 @@ namespace AgentAspirateur.Agent
 
         private void CycleLife()
         {
-            //Observe son envionnement
-            belief = MainWindow.environment.getMap();
-            position = new Position(MainWindow.environment.robot);
+            
+            updateBelief();
+
             while (Alive)
             {
 
@@ -65,10 +65,14 @@ namespace AgentAspirateur.Agent
 
                 else
                 {
-                    //Met à jour son environnement 
-                    updatBelief();
 
+                    //Met à jour son environnement 
+                    updateBelief();
+
+                    Graph g = new Graph(belief);
                     //Choisit une action
+                    searchLogic.SearchPath(g.nodes[position.x][position.y],g);
+
                     intention.Enqueue(Action.EAST);
                     //Execute son action
                     Effectors.executeAction(intention.Dequeue(), position);
@@ -77,6 +81,10 @@ namespace AgentAspirateur.Agent
                 Thread.Sleep(2000);
             }
 
+
+        }
+        private Queue<Action> TreeSearch(Problem p,SearchStrategy strategy)
+        {
 
         }
         private Boolean goalCompleted()
@@ -91,6 +99,7 @@ namespace AgentAspirateur.Agent
             }
             return true;
         }
+        
         private bool mapsEquals(List<Tile> m1, List<Tile> m2)
         {
             foreach (Tile t in m1)
@@ -105,11 +114,11 @@ namespace AgentAspirateur.Agent
             }
             return true;
         }
-
-
-        private void updatBelief()
+        
+        private void updateBelief()
         {
-
+            belief = MainWindow.environment.getMap();
+            position = new Position(MainWindow.environment.robot);
         }
 
         

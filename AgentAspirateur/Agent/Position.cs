@@ -50,7 +50,16 @@ namespace AgentAspirateur
             this.x = _x;
             this.y = _y;
         }
+        public double dist(Position p2)
+        {
+            double x = 0;
+            double y = 0;
 
+            x = p2.x - this.x;
+            y = p2.y - this.y;
+
+            return Math.Sqrt(x*x+y*y);
+        }
         public Position getPositionInDirection(direction d)
         {
             Position p = null;

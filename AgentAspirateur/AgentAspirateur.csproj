@@ -58,20 +58,20 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Agent\Graph.cs" />
+    <Compile Include="TreeSearch\Graph.cs" />
+    <Compile Include="TreeSearch\Problem.cs" />
     <Compile Include="TreeSearch\Asearch.cs" />
-    <Compile Include="TreeSearch\TreeSearch.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
     <Compile Include="Agent\Agent.cs" />
-    <Compile Include="Agent\Node.cs" />
-    <Compile Include="Agent\IterativeDeepeningSearch.cs" />
+    <Compile Include="TreeSearch\Node.cs" />
+    <Compile Include="TreeSearch\IterativeDeepeningSearch.cs" />
     <Compile Include="Agent\DiamondSensor.cs" />
     <Compile Include="Agent\DustSensor.cs" />
     <Compile Include="Agent\Effectors.cs" />
-    <Compile Include="Agent\SearchLogic.cs" />
+    <Compile Include="TreeSearch\SearchStrategy.cs" />
     <Compile Include="Agent\Sensors.cs" />
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
@@ -84,7 +84,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Position.cs" />
+    <Compile Include="Agent\Position.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
