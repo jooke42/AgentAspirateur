@@ -6,52 +6,67 @@ using System.Threading.Tasks;
 
 namespace AgentAspirateur.Agent
 {
-    class Node
+    public class Node
     {
+        private Node parentNode;
+        private HashSet<Node> childNodes = new HashSet<Node>();
+        int depth;
+        int pathCost;
+        Action action;
+        public State state;
 
-        private HashSet<Node> neighboors = new HashSet<Node>();
-        private bool dust;
-        private bool diamond;
-        public Position pos;
-
-        public Node() {
-            dust = false;
-            diamond = false;
-        }
-
-        public Node(int _x, int _y, bool _dust, bool _diamond)
+        public Node(
+            Node _parentNode,
+            Action _action,
+            State _state,
+            int _depth)
         {
-            pos = new Position(_x,_y);
-            dust = _dust;
-            diamond = _diamond;
+            this.parentNode = _parentNode;
+            this.action = new Action(_action);
+            this.state = _state;
+            this.depth = _depth;
         }
 
-        public Node(Position _p, bool _dust, bool _diamond)
+        public void setPathCost(int _pathCost)
         {
-            pos = new Position(_p);
-            dust = _dust;
-            diamond = _diamond;
+            this.pathCost = _pathCost;
         }
 
-        public bool hasDust() { return dust; }
-        public bool hasDiamond() { return diamond; }
+        // Expand given node
+        public HashSet<Node> expand(Problem p)
+        {
+            HashSet<Node> nodes = new HashSet<Node>();
+            foreach (KeyValuePair<Action, State> entry in successorFN(p))
+            {
+                Node s = new Node(
+                    this,
+                     entry.Key,
+                    entry.Value,
+                    this.depth + 1
+                    );
 
-        public void addNeighboor(Node n)
-        {
-            this.neighboors.Add(n);
-            n.neighboors.Add(this);
+                s.setPathCost((int)(this.pathCost + actionCost(this, s)));
+            }
+            return nodes;
         }
-        public void removeNeighboor(Node n)
-        {
-            this.neighboors.Remove(n);
-            n.neighboors.Remove(this);
-        }
-        public HashSet<Node> getNeighboors()
-        {
-            return neighboors;
-        }
-        public void setDust(bool pDust) {dust = pDust; }
-        public void setDiamond(bool pDiamond) { diamond = pDiamond; }
 
+        public double actionCost(Node start, Node end)
+        {
+            return start.state.robotPos.dist(end.state.robotPos);
+        }
+
+        // generate 
+        Dictionary<Action, State> successorFN(Problem p)
+        {
+            Dictionary<Action, State> result = new Dictionary<Action, State>();
+            foreach(Position pos in this.state.dustOrDiamondPos)
+            {
+
+                Action newAct = new Action(pos, ActionType.MOVE);
+                result.Add(newAct, this.state.GenerateNewStateFromAction(newAct));
+            }
+
+            return result;
+        }
     }
 }

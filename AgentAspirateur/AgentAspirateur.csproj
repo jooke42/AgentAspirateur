@@ -58,16 +58,19 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="TreeSearch\Graph.cs" />
+    <Compile Include="Agent\Action.cs" />
     <Compile Include="TreeSearch\Problem.cs" />
     <Compile Include="TreeSearch\Asearch.cs" />
+    <Compile Include="TreeSearch\UniformCostSearch.cs" />
+    <Compile Include="WindowGraph.xaml.cs">
+      <DependentUpon>WindowGraph.xaml</DependentUpon>
+    </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
     <Compile Include="Agent\Agent.cs" />
     <Compile Include="TreeSearch\Node.cs" />
-    <Compile Include="TreeSearch\IterativeDeepeningSearch.cs" />
     <Compile Include="Agent\DiamondSensor.cs" />
     <Compile Include="Agent\DustSensor.cs" />
     <Compile Include="Agent\Effectors.cs" />
@@ -82,6 +85,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="WindowGraph.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Agent\Position.cs" />

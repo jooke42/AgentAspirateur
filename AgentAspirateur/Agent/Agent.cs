@@ -12,7 +12,7 @@ namespace AgentAspirateur.Agent
     public class Agent
     {
         private Position position;
-        private Queue<Action> intention;
+        private Queue<ActionType> intention;
         private List<Tile>[][] belief;
         private List<Tile>[][] desire;
         private Random rdm= new Random();
@@ -42,7 +42,7 @@ namespace AgentAspirateur.Agent
                     desire[i][j] = new List<Tile>() { Tile.FLOOR };
                 }
             }
-            intention = new Queue<Action>();
+            intention = new Queue<ActionType>();
 
         }
           
@@ -69,11 +69,11 @@ namespace AgentAspirateur.Agent
                     //Met à jour son environnement 
                     updateBelief();
 
-                    Graph g = new Graph(belief);
+                    
                     //Choisit une action
                     searchLogic.SearchPath(g.nodes[position.x][position.y],g);
 
-                    intention.Enqueue(Action.EAST);
+                    intention.Enqueue();
                     //Execute son action
                     Effectors.executeAction(intention.Dequeue(), position);
                 }
@@ -83,10 +83,11 @@ namespace AgentAspirateur.Agent
 
 
         }
-        private Queue<Action> TreeSearch(Problem p,SearchStrategy strategy)
+        private Queue<ActionType> TreeSearch(Problem p,SearchStrategy strategy)
         {
 
         }
+
         private Boolean goalCompleted()
         {
             for (int i = 0; i < desire.Length; i++)

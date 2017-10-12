@@ -9,43 +9,43 @@ namespace AgentAspirateur.Agent
     static class Effectors
     {
         
-        public static void executeAction(Action action, Position robot)
+        public static void executeAction(ActionType action, Position robot)
         {
             switch (action)
             {
-                case Action.PICK:
+                case ActionType.PICK:
                     pickDiamond(robot.x, robot.y);
                     break;
 
-                case Action.VACUUM:
+                case ActionType.VACUUM:
                     vacuumDust(robot.x, robot.y);
                     break;
-                case Action.NORTH:
-                case Action.SOUTH:
-                case Action.EAST:
-                case Action.WEST:
+                case ActionType.MOVE:
+                case ActionType.SOUTH:
+                case ActionType.EAST:
+                case ActionType.WEST:
                     move(action,robot);
                     break;
             }
         }
-        public static void move(Action movement,Position robot)
+        public static void move(ActionType movement,Position robot)
         {
 
             switch (movement)
             {
-                case Action.NORTH:
+                case ActionType.NORTH:
                     Console.WriteLine("NORTH");
                     MainWindow.environment.addEvent("MOVE:NORTH");
                     break;
-                case Action.SOUTH:
+                case ActionType.SOUTH:
                     Console.WriteLine("SOUTH");
                     MainWindow.environment.addEvent("MOVE:SOUTH");
                     break;
-                case Action.EAST:
+                case ActionType.EAST:
                     Console.WriteLine("EAST");
                     MainWindow.environment.addEvent("MOVE:EAST");
                     break;
-                case Action.WEST:
+                case ActionType.WEST:
                     Console.WriteLine("WEST");
                     MainWindow.environment.addEvent("MOVE:WEST");
                     break;

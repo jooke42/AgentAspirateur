@@ -27,7 +27,7 @@ namespace AgentAspirateur.TreeSearch
         
     }
 
-    class Asearch : TreeSearch
+    class Asearch
     {
 
         private goal currentGoal;
@@ -36,7 +36,7 @@ namespace AgentAspirateur.TreeSearch
             throw new NotImplementedException();
         }
 
-        public List<Agent.Action> findPath(Position start, List<Position> dustOrDiamond)
+        public List<Agent.ActionType> findPath(Position start, List<Position> dustOrDiamond)
         {
 
             currentGoal = getGoal(start, dustOrDiamond);

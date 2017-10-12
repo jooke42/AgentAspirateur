@@ -34,11 +34,13 @@ namespace AgentAspirateur
             return d;
         }
     }
-    public class Position
+    
+
+    public class Position : IEquatable<Position>
 
     {
         public int x, y;
-
+        public Position(){}
         public Position(Position p)
         {
             this.x = p.x;
@@ -89,6 +91,11 @@ namespace AgentAspirateur
         public bool validPosition()
         {
             return validPosition(10, 10);
+        }
+
+        public bool Equals(Position other)
+        {
+            return this.x == other.x && this.y == other.y;
         }
     }
 }

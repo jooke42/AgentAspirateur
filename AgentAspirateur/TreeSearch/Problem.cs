@@ -6,16 +6,55 @@ using System.Threading.Tasks;
 
 namespace AgentAspirateur.Agent
 {
-    public struct State
+    public class State
     {
         public Position robotPos;
-        public List<Tile>[][] map;
+        public List<Position> dustOrDiamondPos;
+
+        public State(){
+            this.dustOrDiamondPos = new List<Position>();
+        }
+        public State(State _state) {
+            this.dustOrDiamondPos=new List<Position>(dustOrDiamondPos);
+        }
+
+        public State GenerateNewStateFromAction(Action action)
+        {
+            State newState;
+            if (this.dustOrDiamondPos.Contains(action.applyTo))
+            {
+                newState = new State(this);
+                newState.dustOrDiamondPos.Remove(action.applyTo);
+                newState.robotPos = new Position(action.applyTo);
+            }
+            else
+            {
+                throw new Exception("action impossible");
+            }
+
+            return newState;
+        }
+
+        public State(Position _robotPos , List<Tile>[][] map)
+        {
+            this.dustOrDiamondPos = new List<Position>();
+            this.robotPos = new Position(_robotPos);
+            for (int i = map.Length; i > 0; i--)
+            {
+                for (int j = map[i].Length; j > 0; j--)
+                {
+                    bool dust = map[i][j].Contains(Tile.DUST);
+                    bool diamond = map[i][j].Contains(Tile.DIAMOND);
+                    if (dust || diamond)
+                        dustOrDiamondPos.Add(new Position(i, j));
+                }
+            }
+        }
+
 
     }
-
-    public enum Action { NORTH, SOUTH, EAST, WEST, VACUUM, PICK }
-
-    class Problem
+    
+    public class Problem
     {
         State initialState;
         private List<Tile>[][] goal;
@@ -26,38 +65,11 @@ namespace AgentAspirateur.Agent
             this.goal = _goal;
         }
 
-        public Boolean goalCompleted()
+        public Boolean goalCompleted(State s)
         {
-            for (int i = 0; i < goal.Length; i++)
-            {
-                for (int j = 0; j < goal[i].Length; j++)
-                {
-                    if (!mapsEquals(goal[i][j], initialState.map[i][j]))
-                        return false;
-                }
-            }
-            return true;
+            return s.dustOrDiamondPos.Count() == 0;
         }
-
-        public double ActionCost(Node start, Node end)
-        {
-            return start.pos.dist(end.pos);
-        }
-
-        private bool mapsEquals(List<Tile> m1, List<Tile> m2)
-        {
-            
-            foreach (Tile t in m1)
-            {
-                if (!m2.Contains(t))
-                    return false;
-            }
-            foreach (Tile t in m2)
-            {
-                if (!m1.Contains(t))
-                    return false;
-            }
-            return true;
-        }
+        
+        
     }
 }
