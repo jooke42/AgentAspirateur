@@ -42,7 +42,7 @@ namespace AgentAspirateur.Agent
                 }
             }
             intention = new Queue<Action>();
-
+            //test
         }
           
 
