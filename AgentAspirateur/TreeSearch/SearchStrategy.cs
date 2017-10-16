@@ -9,7 +9,7 @@ namespace AgentAspirateur.Agent
     interface SearchStrategy
     {
         // SearchPath to resolve problem
-        List<Action> SearchPath(Problem p);
+        Node SearchPath(Problem p);
         
     }
 }

@@ -97,5 +97,10 @@ namespace AgentAspirateur
         {
             return this.x == other.x && this.y == other.y;
         }
+
+        public override string ToString()
+        {
+            return "(" + x+";"+y+")";
+        }
     }
 }

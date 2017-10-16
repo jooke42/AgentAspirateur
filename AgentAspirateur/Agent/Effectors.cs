@@ -9,47 +9,67 @@ namespace AgentAspirateur.Agent
     static class Effectors
     {
         
-        public static void executeAction(ActionType action, Position robot)
+        public static void executeAction(Action action, Position robot)
         {
-            switch (action)
+            switch (action.actionType)
             {
                 case ActionType.PICK:
+                    move(action, robot);
                     pickDiamond(robot.x, robot.y);
                     break;
 
                 case ActionType.VACUUM:
+                    move(action, robot);
                     vacuumDust(robot.x, robot.y);
-                    break;
-                case ActionType.MOVE:
-                case ActionType.SOUTH:
-                case ActionType.EAST:
-                case ActionType.WEST:
-                    move(action,robot);
                     break;
             }
         }
-        public static void move(ActionType movement,Position robot)
+        public static void move(Action a,Position robot)
         {
 
-            switch (movement)
+            int deltaX, deltaY;
+            deltaX = a.applyTo.x - robot.x;
+            deltaY = a.applyTo.y- robot.y;
+            bool doX = true;
+            while(deltaX !=0 && deltaY != 0)
             {
-                case ActionType.NORTH:
-                    Console.WriteLine("NORTH");
-                    MainWindow.environment.addEvent("MOVE:NORTH");
-                    break;
-                case ActionType.SOUTH:
-                    Console.WriteLine("SOUTH");
-                    MainWindow.environment.addEvent("MOVE:SOUTH");
-                    break;
-                case ActionType.EAST:
-                    Console.WriteLine("EAST");
-                    MainWindow.environment.addEvent("MOVE:EAST");
-                    break;
-                case ActionType.WEST:
-                    Console.WriteLine("WEST");
-                    MainWindow.environment.addEvent("MOVE:WEST");
-                    break;
+                if(deltaX != 0 && doX)
+                {
+                    if(deltaX > 0)
+                    {
+                        Console.WriteLine("EAST");
+                        MainWindow.environment.addEvent("MOVE:EAST");
+                        deltaX--;
+                    }
+                    else
+                    {
+                        Console.WriteLine("WEST");
+                        MainWindow.environment.addEvent("MOVE:WEST");
+                        deltaX++;
+                    }
+                    
+                    doX = false;
+                }
+                else if(deltaY != 0)
+                {
+                    if (deltaY < 0)
+                    {
+                        Console.WriteLine("NORTH");
+                        MainWindow.environment.addEvent("MOVE:NORTH");
+                        deltaY++;
+                    }
+                    else
+                    {
+                        Console.WriteLine("SOUTH");
+                        MainWindow.environment.addEvent("MOVE:SOUTH");
+                        deltaY--;
+                    }
+                    doX = true;
+                    
+                }
+
             }
+       
             
         }
 

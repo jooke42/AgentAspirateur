@@ -12,13 +12,12 @@ namespace AgentAspirateur.Agent
     public class Agent
     {
         private Position position;
-        private Queue<ActionType> intention;
+        private Queue<Action> intention;
         private List<Tile>[][] belief;
         private List<Tile>[][] desire;
         private Random rdm= new Random();
         public DustSensor dustSensors;
         public DiamondSensor diamondSensor;
-        private SearchStrategy searchLogic = new IterativeDeepeningSearch();
         Boolean Alive;
 
        
@@ -42,7 +41,7 @@ namespace AgentAspirateur.Agent
                     desire[i][j] = new List<Tile>() { Tile.FLOOR };
                 }
             }
-            intention = new Queue<ActionType>();
+            intention = new Queue<Action>();
 
         }
           
@@ -68,23 +67,41 @@ namespace AgentAspirateur.Agent
 
                     //Met à jour son environnement 
                     updateBelief();
-
-                    
-                    //Choisit une action
-                    searchLogic.SearchPath(g.nodes[position.x][position.y],g);
-
-                    intention.Enqueue();
+                    if(intention.Count() == 0)
+                    {
+                        Problem p = new Problem(new State(position, belief), desire);
+                        //Choisit une action
+                        foreach(Action a in TreeSearch(p, new UniformCostSearch()).ToList())
+                        {
+                            intention.Enqueue(a);
+                        }
+                    }
+                    if(intention.Count != 0)
+                        Effectors.executeAction(intention.Dequeue(), position);
+                    updateBelief();
+                    Thread.Sleep(5000);
                     //Execute son action
-                    Effectors.executeAction(intention.Dequeue(), position);
+
                 }
 
-                Thread.Sleep(2000);
+                
             }
 
 
         }
-        private Queue<ActionType> TreeSearch(Problem p,SearchStrategy strategy)
+        private Stack<Action> TreeSearch(Problem p,SearchStrategy strategy)
         {
+            Stack<Action> actionList = new Stack<Action>();
+            Node endNode = strategy.SearchPath(p);
+
+            while (endNode != null)
+            {
+
+                if (endNode.action != null)
+                    actionList.Push(endNode.action);
+                endNode = endNode.parentNode;
+            }
+            return actionList;
 
         }
 

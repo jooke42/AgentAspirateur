@@ -72,8 +72,10 @@ namespace AgentAspirateur
         }
         public void start()
         {
-            _timerDust.Start();
-            _timerDiamond.Start();
+            generateRandomDust();
+            generateRandomDust();
+            // _timerDust.Start();
+            //_timerDiamond.Start();
 
             while (true)
             {
@@ -82,27 +84,22 @@ namespace AgentAspirateur
                 {
                     string evt = events.Dequeue();
                   /**
-                         * PICK:X:Y
-                         * VACUUM:X:Y
+                         * PICK
+                         * VACUUM
                          * MOVE:LEFT
                          */
                         string[] parsedEvent = evt.Split(':');
                         string action = parsedEvent[0];
-                        int x, y;
                         string move;
                         Position newPos;
                         switch (action)
                         {
                             case "PICK":
-                                x = int.Parse(parsedEvent[1]);
-                                y = int.Parse(parsedEvent[2]);
-                                map[x][y].Remove(Tile.DUST);
-                                break;
+                                map[robot.x][robot.y].Remove(Tile.DIAMOND);
+                            break;
                             case "VACUUM":
-                                x = int.Parse(parsedEvent[1]);
-                                y = int.Parse(parsedEvent[2]);
-                                map[x][y].Remove(Tile.DIAMOND);
-                                break;
+                                map[robot.x][robot.y].Remove(Tile.DUST);
+                            break;
                             case "MOVE":
                                 move = parsedEvent[1];
                                 newPos = this.robot.getPositionInDirection(DirectionMethod.directionFromString(move));
@@ -110,6 +107,7 @@ namespace AgentAspirateur
                                     robot = newPos;
                                 break;
                         }
+                    Thread.Sleep(2000);
                     
                 }
                 
@@ -117,7 +115,7 @@ namespace AgentAspirateur
         }
         public void generateRandomDust()
         {
-            int nbToCreate = rndDust.Next(0, 2);
+            int nbToCreate = rndDust.Next(0, 3);
             while (nbToCreate > 0)
             {
                 int x = rndDust.Next(0, 10);

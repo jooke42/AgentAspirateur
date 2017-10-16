@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace AgentAspirateur.Agent
 {
-    public class Node
+    public class Node : IComparable<Node>
     {
-        private Node parentNode;
+        public Node parentNode;
         private HashSet<Node> childNodes = new HashSet<Node>();
-        int depth;
-        int pathCost;
-        Action action;
+        public int depth;
+        public int pathCost;
+        public Action action;
         public State state;
 
         public Node(
@@ -22,7 +22,7 @@ namespace AgentAspirateur.Agent
             int _depth)
         {
             this.parentNode = _parentNode;
-            this.action = new Action(_action);
+            this.action = _action;
             this.state = _state;
             this.depth = _depth;
         }
@@ -33,19 +33,21 @@ namespace AgentAspirateur.Agent
         }
 
         // Expand given node
-        public HashSet<Node> expand(Problem p)
+        public List<Node> expand(Problem p)
         {
-            HashSet<Node> nodes = new HashSet<Node>();
+            List<Node> nodes = new List<Node>();
             foreach (KeyValuePair<Action, State> entry in successorFN(p))
             {
+
                 Node s = new Node(
                     this,
                      entry.Key,
                     entry.Value,
                     this.depth + 1
                     );
-
+                this.childNodes.Add(s);
                 s.setPathCost((int)(this.pathCost + actionCost(this, s)));
+                nodes.Add(s);
             }
             return nodes;
         }
@@ -61,12 +63,24 @@ namespace AgentAspirateur.Agent
             Dictionary<Action, State> result = new Dictionary<Action, State>();
             foreach(Position pos in this.state.dustOrDiamondPos)
             {
-
-                Action newAct = new Action(pos, ActionType.MOVE);
+                
+                Action newAct = new Action(pos, ActionType.VACUUM);
                 result.Add(newAct, this.state.GenerateNewStateFromAction(newAct));
             }
 
             return result;
+        }
+
+        public int CompareTo(Node other)
+        {
+            if (this.pathCost > other.pathCost) return -1;
+            if (this.pathCost == other.pathCost) return 0;
+            return 1;
+        }
+
+        public override string ToString()
+        {
+            return state.robotPos.ToString();
         }
     }
 }

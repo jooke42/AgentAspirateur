@@ -15,7 +15,7 @@ namespace AgentAspirateur.Agent
             this.dustOrDiamondPos = new List<Position>();
         }
         public State(State _state) {
-            this.dustOrDiamondPos=new List<Position>(dustOrDiamondPos);
+            this.dustOrDiamondPos=new List<Position>(_state.dustOrDiamondPos);
         }
 
         public State GenerateNewStateFromAction(Action action)
@@ -39,9 +39,9 @@ namespace AgentAspirateur.Agent
         {
             this.dustOrDiamondPos = new List<Position>();
             this.robotPos = new Position(_robotPos);
-            for (int i = map.Length; i > 0; i--)
+            for (int i = map.Length -1; i >= 0; i--)
             {
-                for (int j = map[i].Length; j > 0; j--)
+                for (int j = map[i].Length-1; j >= 0; j--)
                 {
                     bool dust = map[i][j].Contains(Tile.DUST);
                     bool diamond = map[i][j].Contains(Tile.DIAMOND);
@@ -56,7 +56,7 @@ namespace AgentAspirateur.Agent
     
     public class Problem
     {
-        State initialState;
+        public State initialState;
         private List<Tile>[][] goal;
 
         public Problem(State _initialState, List<Tile>[][] _goal)
@@ -69,7 +69,11 @@ namespace AgentAspirateur.Agent
         {
             return s.dustOrDiamondPos.Count() == 0;
         }
-        
-        
+        public override string ToString()
+        {
+            return initialState.ToString();
+        }
+
+
     }
 }
