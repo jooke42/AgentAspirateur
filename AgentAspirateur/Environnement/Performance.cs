@@ -19,6 +19,7 @@ namespace AgentAspirateur
         private int diamondPicked = 0;
         private int diamondVacuumed = 0;
         private int numberOfAction = 0;
+        private int electricityConsummed = 0;
 
         private double performanceScore = 0;
 
@@ -27,9 +28,7 @@ namespace AgentAspirateur
         {
             this.environnement = environnement;
         }
-              
-    
-        
+                      
         public void addAction(String action)
         {           
            
@@ -46,22 +45,29 @@ namespace AgentAspirateur
                 case "PICK DIAMOND":
                     diamondPicked++;
                     numberOfAction++;
+                    electricityConsummed++;
                     break;
 
                 case "VACUUM DUST":
                     dustVacuumed++;
                     numberOfAction++;
+                    electricityConsummed++;
                     break;
 
                 case "VACUUM DIAMOND":
                     diamondVacuumed++;
                     numberOfAction++;
+                    electricityConsummed++;
                     break;
-               
+
+                case "MOVE":
+                    electricityConsummed++;
+                    break;
+
+
+
             }
             computePerformance();
-
-
         }
 
         public double getPerformance()
@@ -75,11 +81,10 @@ namespace AgentAspirateur
 
             int dustLeft = dust - dustVacuumed;
             int diamondLeft = diamond - diamondPicked - diamondVacuumed;
-            performanceScore = ((100 - dustLeft + 100 - diamondLeft) / computeMalus()) + numberOfAction * costElectricity;
-
-
-               // 100 * (alpha * (100 - dustLeft) + beta * (100 - diamondLeft)) / ((alpha * 100 + beta * (100 - diamondLeft)) + computeMalus() * beta  + numberOfAction * costElectricity);
-            
+            int vacuumedandPicked = dustVacuumed + diamondPicked;
+          
+            if(electricityConsummed != 0)
+                 performanceScore = ((dustVacuumed + diamondPicked) / electricityConsummed) - computeMalus();            
             
         }
 

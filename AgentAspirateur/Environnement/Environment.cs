@@ -93,9 +93,6 @@ namespace AgentAspirateur
             while (true)
             {
                 Thread.Sleep(500);
-
-                
-
                 displayBelief();
                 while (events.Count != 0)
                 {
@@ -132,14 +129,17 @@ namespace AgentAspirateur
                               
                             }
                             
-
                             break;
                             case "MOVE":
                                 move = parsedEvent[1];
                                 newPos = this.robot.getPositionInDirection(DirectionMethod.directionFromString(move));
-                                if (newPos.validPosition(this.sizeMap.width, this.sizeMap.height))
+                                 if (newPos.validPosition(this.sizeMap.width, this.sizeMap.height))
+                                 {
                                     robot = newPos;
-                                break;
+                                    performance.addAction("MOVE");
+                                 }
+                           
+                            break;
                         }
                     //Thread.Sleep(500);
                     
@@ -151,7 +151,7 @@ namespace AgentAspirateur
         private void displayBelief()
         {
             // Console.WriteLine("Position du robot env: " + this.robot.x + " " + this.robot.y);
-            Console.WriteLine("Mesure de performance" + this.performance.getPerformance());
+            Console.WriteLine("Mesure de performance " + this.performance.getPerformance());
 
         }
         public void generateRandomDust()
