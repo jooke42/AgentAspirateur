@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AgentAspirateur
 {
-    public enum direction { NORTH, EAST,SOUTH,WEST}
+    public enum direction { NORTH, EAST,SOUTH,WEST, NE, NW, SE, SW}
 
     public static class DirectionMethod
     {
@@ -78,6 +78,18 @@ namespace AgentAspirateur
                     break;
                 case direction.WEST:
                     p = new Position(this.x - 1, this.y);
+                    break;
+                case direction.NE:
+                    p = new Position(this.x + 1, this.y-1);
+                    break;
+                case direction.NW:
+                    p = new Position(this.x - 1, this.y - 1);
+                    break;
+                case direction.SE:
+                    p = new Position(this.x + 1, this.y + 1);
+                    break;
+                case direction.SW:
+                    p = new Position(this.x - 1, this.y + 1);
                     break;
             }
             return p;

@@ -19,9 +19,7 @@ namespace AgentAspirateur.TreeSearch
 
         public Node SearchPath(Problem p)
         {
-            Node startingNode = new Node(null, null, p.initialState, 0);
-            //compute path code befoe sort
-
+            Node startingNode = new Node(null, null, p.initialState, 0);   
             return findBestNode(startingNode,startingNode.expand(p));          
             
         }
@@ -49,10 +47,8 @@ namespace AgentAspirateur.TreeSearch
         {
             //Compute manhattan Distance between node stard and goal
             int manhattanDistance = computeManhattanDistance(start.state.robotPos, goal.state.robotPos);
-
-            int heuristic = getHeuristic(start, goal);
-
-            return heuristic + manhattanDistance;
+            int heuristic = computeNumberOfDustOrDiamond(manhattanDistance, goal.state.robotPos);
+            return  manhattanDistance ;
 
         }
 
@@ -64,30 +60,50 @@ namespace AgentAspirateur.TreeSearch
             int manhattanDistance = absX + absY;
             return manhattanDistance;
         }
+        
 
-        private int getHeuristic(Node start, Node goal)
+        private void findBestDirection()
         {
-            int heuristic = Int32.MaxValue;
 
 
-            //Find each diamond and dust 
-
-            return 0;
         }
 
-        private int computeNumberOfDustOrDiamond(Position p)
+        private Node closestNode(direction d)
         {
-            
-            return 0;
+
+
+            return null;
         }
 
-        private int getDustNumberInDirection(Position start,direction direction, Problem p)
-        {          
-            List<Position> dustOrDiamond =  p.initialState.dustOrDiamondPos;
+        private int computeNumberOfDustOrDiamond(int manhattanDistance, Position p)
+        {
 
-            return 0; 
+            //North 
 
+
+
+
+            int count = manhattanDistance;
+            if (problem.initialState.dustOrDiamondPos.Contains(p.getPositionInDirection(direction.NORTH)) && p.getPositionInDirection(direction.NORTH).validPosition())
+                count--;
+            if (problem.initialState.dustOrDiamondPos.Contains(p.getPositionInDirection(direction.EAST)) && p.getPositionInDirection(direction.EAST).validPosition())
+                count--;
+            if (problem.initialState.dustOrDiamondPos.Contains(p.getPositionInDirection(direction.WEST)) && p.getPositionInDirection(direction.WEST).validPosition())
+                count--;
+            if (problem.initialState.dustOrDiamondPos.Contains(p.getPositionInDirection(direction.SOUTH)) && p.getPositionInDirection(direction.WEST).validPosition())
+                count--;
+            if (problem.initialState.dustOrDiamondPos.Contains(p.getPositionInDirection(direction.SE)) && p.getPositionInDirection(direction.SE).validPosition())
+                count--;
+            if (problem.initialState.dustOrDiamondPos.Contains(p.getPositionInDirection(direction.SW)) && p.getPositionInDirection(direction.SW).validPosition())
+                count--;
+            if (problem.initialState.dustOrDiamondPos.Contains(p.getPositionInDirection(direction.NE)) && p.getPositionInDirection(direction.NE).validPosition())
+                count--;
+            if (problem.initialState.dustOrDiamondPos.Contains(p.getPositionInDirection(direction.NW)) && p.getPositionInDirection(direction.NW).validPosition())
+                count--;
+            return count;
         }
+
+       
 
 
         

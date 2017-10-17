@@ -73,7 +73,7 @@ namespace AgentAspirateur.Agent
                         updateBelief();
                         Problem p = new Problem(new State(position, belief), desire);
                         //Choisit une action
-                        foreach(Action a in TreeSearch(p, new UniformCostSearch()).ToList())
+                        foreach(Action a in TreeSearch(p, new Asearch(p)).ToList())
                         {
                             intention.Enqueue(a);
                         }
@@ -82,13 +82,12 @@ namespace AgentAspirateur.Agent
                     if(intention.Count != 0)
                     {
                         Action a = intention.Dequeue();
-                        Effectors.executeAction(a, position);                       
-                        position = a.applyTo;
-                       
+                        Effectors.executeAction(a, position);                        
+                        position = a.applyTo;                      
 
                     }
                         
-                    Thread.Sleep(2000);
+                    Thread.Sleep(1000);
                     //Execute son action
 
                 }

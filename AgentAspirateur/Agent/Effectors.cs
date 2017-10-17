@@ -22,7 +22,7 @@ namespace AgentAspirateur.Agent
 
                     case ActionType.VACUUM:
                         move(action, robot);
-                        vacuumDust(action.applyTo.x, action.applyTo.y);
+                        vacuumDust(robot.x, robot.y);
                         break;
 
                     case ActionType.MOVE:
