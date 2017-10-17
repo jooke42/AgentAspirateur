@@ -18,7 +18,7 @@ namespace AgentAspirateur.TreeSearch
 
             while( fringe.Count() != 0)
             {
-                Node node = fringe.Min();
+                Node node = fringe.Max();
                 fringe.Remove(node);
                 if (p.goalCompleted(node.state))
                     return node;
@@ -27,10 +27,12 @@ namespace AgentAspirateur.TreeSearch
                     fringe.Add(n);
             }
 
-            return null;
-            
-
+            return null;          
             
         }
+
+       
+
+
     }
 }

@@ -58,6 +58,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="AgentBelief.xaml.cs">
+      <DependentUpon>AgentBelief.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Agent\Action.cs" />
     <Compile Include="TreeSearch\Problem.cs" />
     <Compile Include="TreeSearch\Asearch.cs" />
@@ -65,6 +68,10 @@
     <Compile Include="WindowGraph.xaml.cs">
       <DependentUpon>WindowGraph.xaml</DependentUpon>
     </Compile>
+    <Page Include="AgentBelief.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

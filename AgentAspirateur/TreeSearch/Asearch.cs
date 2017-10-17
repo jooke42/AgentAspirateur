@@ -7,125 +7,93 @@ using AgentAspirateur.Agent;
 
 namespace AgentAspirateur.TreeSearch
 {
-    struct goal
+   
+    class Asearch : SearchStrategy
     {
-        public Position position { get; set; }
-        public int ManhattanDistance { get; set; }
+        Problem problem;
 
-    }
-
-    struct adjacentSquare
-    {
-        public Position position { get; set; }
-        public int ManhattanDistance { get; set; }
-        public int G { get; set; }
-
-        public int F { get; set; }
-
-        public bool hasDiamond { get; set; }
-        public bool hasDust { get; set; }
-        
-    }
-
-    class Asearch
-    {
-
-        private goal currentGoal;
-        public void AddProblem()
+        public Asearch(Problem _problem)
         {
-            throw new NotImplementedException();
+            this.problem = _problem;          
         }
 
-        public List<Agent.ActionType> findPath(Position start, List<Position> dustOrDiamond)
+        public Node SearchPath(Problem p)
         {
+            Node startingNode = new Node(null, null, p.initialState, 0);
+            //compute path code befoe sort
 
-            currentGoal = getGoal(start, dustOrDiamond);
-
-            return null;
-
-        }
-                  
-
-
-        private List<Position> adjacentSquares(Position currentPosition)
-        {
-            List<Position> adjacentSquares = new List<Position>();
-            Position east = currentPosition.getPositionInDirection(direction.EAST);
-            Position north = currentPosition.getPositionInDirection(direction.NORTH);
-            Position south = currentPosition.getPositionInDirection(direction.SOUTH);
-            Position west = currentPosition.getPositionInDirection(direction.WEST);
-
-            if (east.validPosition())
-                adjacentSquares.Add(east);
-            if (north.validPosition())
-                adjacentSquares.Add(north);
-            if (south.validPosition())
-                adjacentSquares.Add(south);
-            if (west.validPosition())
-                adjacentSquares.Add(west);
-
-            return adjacentSquares;
-
-
-
-        }
-                    
-                        
-        private goal getGoal(Position currentPosition, List<Position> dustOrDiamond)
-        {
-            return getClosestGoal(currentPosition, dustOrDiamond);
+            return findBestNode(startingNode,startingNode.expand(p));          
+            
         }
 
-        private List<goal> getGoals(Position currentPosition,List<Position> dustOrDiamond)
+        private Node findBestNode(Node start, List<Node> node)
         {
-            List<goal> goals = new List<goal>();
-            foreach(Position p in dustOrDiamond)
+            int minHeuristic = Int32.MaxValue;
+            Node bestNode = null;
+            foreach(Node n in node)
             {
-                goals.Add(new goal { position = p, ManhattanDistance = computeHeuristic(currentPosition, p) });
+                int tmp = computeHeuristic(start, n);
+                if (tmp < minHeuristic)
+                {
+                    minHeuristic = tmp;
+                    bestNode = n;
+                    
+                }
             }
-            return goals;
+
+            return bestNode;
         }
-        
-        private goal getClosestGoal(Position currentPosition, List<Position> dustOrDiamond)
+
+
+        private int computeHeuristic(Node start, Node goal)
         {
-            goal goal = new goal { position = new Position(0, 0), ManhattanDistance = int.MaxValue };
-            foreach(goal g in getGoals(currentPosition, dustOrDiamond))
-                 if (g.ManhattanDistance < goal.ManhattanDistance)
-                 {
-                        goal = g;
-                 }
-            return goal;
-        }   
-        
-        private int computeHeuristic(Position startPoint, Position goalPoint)
-        {
-            return  computeManhattanDistance(startPoint, goalPoint);
+            //Compute manhattan Distance between node stard and goal
+            int manhattanDistance = computeManhattanDistance(start.state.robotPos, goal.state.robotPos);
+
+            int heuristic = getHeuristic(start, goal);
+
+            return heuristic + manhattanDistance;
+
         }
+
 
         private int computeManhattanDistance(Position startPoint, Position goalPoint)
         {
             int absX = Math.Abs(goalPoint.x - startPoint.x);
-            int absY = Math.Abs(goalPoint.y - startPoint.y);          
-            int manhattanDistance = absX + absY ;
+            int absY = Math.Abs(goalPoint.y - startPoint.y);
+            int manhattanDistance = absX + absY;
             return manhattanDistance;
-
         }
 
-        private int computeG(adjacentSquare adjacentSquare)
+        private int getHeuristic(Node start, Node goal)
         {
-            int g = 3;
+            int heuristic = Int32.MaxValue;
 
-            if (adjacentSquare.hasDiamond)
-                g--;
-            if (adjacentSquare.hasDust)
-                g--;
-            
-            return g;
+
+            //Find each diamond and dust 
+
+            return 0;
         }
+
+        private int computeNumberOfDustOrDiamond(Position p)
+        {
+            
+            return 0;
+        }
+
+        private int getDustNumberInDirection(Position start,direction direction, Problem p)
+        {          
+            List<Position> dustOrDiamond =  p.initialState.dustOrDiamondPos;
+
+            return 0; 
+
+        }
+
+
+        
+
+        
 
     }
-
-
-   
 
 }

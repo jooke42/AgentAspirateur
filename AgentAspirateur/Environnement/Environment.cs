@@ -33,7 +33,7 @@ namespace AgentAspirateur
         public Environment()
         {
             init();
-            _timerDust = new System.Timers.Timer(5000); //Updates every 2 sec
+            _timerDust = new System.Timers.Timer(10000); //Updates every 2 sec
             _timerDust.Elapsed += new System.Timers.ElapsedEventHandler(OnTimedEventDust);
 
             _timerDiamond = new System.Timers.Timer(7000); //Updates every 2 sec
@@ -72,14 +72,16 @@ namespace AgentAspirateur
         }
         public void start()
         {
-            generateRandomDust();
-            generateRandomDust();
-            // _timerDust.Start();
+            _timerDust.Start();
             //_timerDiamond.Start();
 
             while (true)
             {
                 Thread.Sleep(500);
+
+                
+
+                displayBelief();
                 while (events.Count != 0)
                 {
                     string evt = events.Dequeue();
@@ -99,6 +101,7 @@ namespace AgentAspirateur
                             break;
                             case "VACUUM":
                                 map[robot.x][robot.y].Remove(Tile.DUST);
+                                map[robot.x][robot.y].Remove(Tile.DIAMOND);
                             break;
                             case "MOVE":
                                 move = parsedEvent[1];
@@ -107,11 +110,17 @@ namespace AgentAspirateur
                                     robot = newPos;
                                 break;
                         }
-                    Thread.Sleep(2000);
+                    Thread.Sleep(500);
                     
                 }
                 
             }
+        }
+
+        private void displayBelief()
+        {
+            Console.WriteLine("Position du robot env: " + this.robot.x + " " + this.robot.y);
+
         }
         public void generateRandomDust()
         {

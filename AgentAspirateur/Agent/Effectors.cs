@@ -11,27 +11,35 @@ namespace AgentAspirateur.Agent
         
         public static void executeAction(Action action, Position robot)
         {
-            switch (action.actionType)
+            if (action != null)
             {
-                case ActionType.PICK:
-                    move(action, robot);
-                    pickDiamond(robot.x, robot.y);
-                    break;
+                switch (action.actionType)
+                {
+                    case ActionType.PICK:
+                        move(action, robot);
+                        pickDiamond(action.applyTo.x, action.applyTo.y);
+                        break;
 
-                case ActionType.VACUUM:
-                    move(action, robot);
-                    vacuumDust(robot.x, robot.y);
-                    break;
+                    case ActionType.VACUUM:
+                        move(action, robot);
+                        vacuumDust(action.applyTo.x, action.applyTo.y);
+                        break;
+
+                    case ActionType.MOVE:
+                        move(action, robot);
+                        Console.WriteLine("move to" + action.applyTo.x + " " + action.applyTo.y);
+                        break;
+                }
             }
         }
-        public static void move(Action a,Position robot)
+        public static void move(Action a, Position robot)
         {
 
             int deltaX, deltaY;
             deltaX = a.applyTo.x - robot.x;
             deltaY = a.applyTo.y- robot.y;
             bool doX = true;
-            while(deltaX !=0 && deltaY != 0)
+            while(deltaX !=0 || deltaY != 0)
             {
                 if(deltaX != 0 && doX)
                 {
@@ -68,20 +76,23 @@ namespace AgentAspirateur.Agent
                     
                 }
 
-            }
-       
+                if (deltaX != 0 && !doX && deltaY == 0)
+                    doX = true;
+
+            }       
             
         }
 
 
         public static void pickDiamond(int x, int y)
         {
+            MainWindow.environment.addEvent("PICK");
             Console.WriteLine("I pick diamond at " + x + "," + y);
         } 
 
         public static void vacuumDust(int x, int y)
         {
-           
+            MainWindow.environment.addEvent("VACUUM");
             Console.WriteLine("I vacuum dust at " + x + "," + y);
         }
 

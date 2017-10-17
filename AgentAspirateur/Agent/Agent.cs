@@ -55,6 +55,7 @@ namespace AgentAspirateur.Agent
         {
             
             updateBelief();
+            displayBelief();
 
             while (Alive)
             {
@@ -66,20 +67,28 @@ namespace AgentAspirateur.Agent
                 {
 
                     //Met à jour son environnement 
-                    updateBelief();
+                                    
                     if(intention.Count() == 0)
-                    {
+                     {
+                        updateBelief();
                         Problem p = new Problem(new State(position, belief), desire);
                         //Choisit une action
                         foreach(Action a in TreeSearch(p, new UniformCostSearch()).ToList())
                         {
                             intention.Enqueue(a);
                         }
-                    }
+                      }
+
                     if(intention.Count != 0)
-                        Effectors.executeAction(intention.Dequeue(), position);
-                    updateBelief();
-                    Thread.Sleep(5000);
+                    {
+                        Action a = intention.Dequeue();
+                        Effectors.executeAction(a, position);                       
+                        position = a.applyTo;
+                       
+
+                    }
+                        
+                    Thread.Sleep(2000);
                     //Execute son action
 
                 }
@@ -87,6 +96,13 @@ namespace AgentAspirateur.Agent
                 
             }
 
+
+        }
+
+
+        private void displayBelief()
+        {
+            Console.WriteLine("Position du robot: " + this.position.x + " " + this.position.y);
 
         }
         private Stack<Action> TreeSearch(Problem p,SearchStrategy strategy)
@@ -101,6 +117,7 @@ namespace AgentAspirateur.Agent
                     actionList.Push(endNode.action);
                 endNode = endNode.parentNode;
             }
+           actionList.Reverse();
             return actionList;
 
         }

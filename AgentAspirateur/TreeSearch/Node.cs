@@ -14,6 +14,11 @@ namespace AgentAspirateur.Agent
         public int pathCost;
         public Action action;
         public State state;
+        private int F;
+        private int G;
+        private int H;
+     
+
 
         public Node(
             Node _parentNode,
@@ -25,6 +30,9 @@ namespace AgentAspirateur.Agent
             this.action = _action;
             this.state = _state;
             this.depth = _depth;
+            G = getG();
+            H = getH();
+            F = getF();
         }
 
         public void setPathCost(int _pathCost)
@@ -35,25 +43,31 @@ namespace AgentAspirateur.Agent
         // Expand given node
         public List<Node> expand(Problem p)
         {
-            List<Node> nodes = new List<Node>();
-            foreach (KeyValuePair<Action, State> entry in successorFN(p))
-            {
+          
+                List<Node> nodes = new List<Node>();
+                foreach (KeyValuePair<Action, State> entry in successorFN(p))
+                {
 
-                Node s = new Node(
-                    this,
-                     entry.Key,
-                    entry.Value,
-                    this.depth + 1
-                    );
-                this.childNodes.Add(s);
-                s.setPathCost((int)(this.pathCost + actionCost(this, s)));
-                nodes.Add(s);
-            }
-            return nodes;
+                    Node s = new Node(
+                        this,
+                         entry.Key,
+                        entry.Value,
+                        this.depth + 1
+                        );
+                    this.childNodes.Add(s);
+
+                    s.setPathCost((int)(this.pathCost + actionCost(this, s)));   
+                    nodes.Add(s);
+                }
+                return nodes;
+            
+           
+            return null;
         }
 
         public double actionCost(Node start, Node end)
         {
+
             return start.state.robotPos.dist(end.state.robotPos);
         }
 
@@ -62,13 +76,21 @@ namespace AgentAspirateur.Agent
         {
             Dictionary<Action, State> result = new Dictionary<Action, State>();
             foreach(Position pos in this.state.dustOrDiamondPos)
-            {
-                
+            {                
                 Action newAct = new Action(pos, ActionType.VACUUM);
                 result.Add(newAct, this.state.GenerateNewStateFromAction(newAct));
+
             }
 
             return result;
+           
+        }
+
+
+
+        public HashSet<Node> getChildNotes()
+        {
+            return childNodes;
         }
 
         public int CompareTo(Node other)
@@ -82,5 +104,57 @@ namespace AgentAspirateur.Agent
         {
             return state.robotPos.ToString();
         }
+
+        public int getG()
+        {
+
+            if (parentNode == null)
+                return 0;
+            return parentNode.G + 1;
+        }
+        public int getH()
+        {
+            return 0;
+        }
+
+        public int getF()
+        {
+            return G + H;
+        }
+
+        public int computeHeuristic(Node other)
+        {
+
+            //G : Incrémenter de 1 
+            int G = 0;
+            if (parentNode == null)
+                G= 0;
+            else
+                G = parentNode.G + 1;
+
+            //H si il y a un diamand ou une poussière, le coût diminue
+            H = getHeuristic(this, other);
+            setPathCost(H + G);
+            return pathCost;
+        }
+
+      
+        private int getHeuristic(Node start, Node end)
+        {
+          
+            return computeManhattanDistance(start.state.robotPos, end.state.robotPos);
+        }
+
+        private int computeManhattanDistance(Position startPoint, Position goalPoint)
+        {
+            int absX = Math.Abs(goalPoint.x - startPoint.x);
+            int absY = Math.Abs(goalPoint.y - startPoint.y);
+            int manhattanDistance = absX + absY;
+            return manhattanDistance;
+
+        }
+
+
+
     }
 }
