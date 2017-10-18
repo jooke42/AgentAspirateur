@@ -8,8 +8,7 @@ namespace AgentAspirateur
 {
     class Performance
     {
-        private  static double alpha = 3;
-        private  static double beta = 5;
+       
         private static int VacuumDiamondPenalty = 5;
         private static double costElectricity = 1;      
      
@@ -78,13 +77,12 @@ namespace AgentAspirateur
 
         private void computePerformance()
         {
-
             int dustLeft = dust - dustVacuumed;
             int diamondLeft = diamond - diamondPicked - diamondVacuumed;
             int vacuumedandPicked = dustVacuumed + diamondPicked;
           
             if(electricityConsummed != 0)
-                 performanceScore = ((dustVacuumed + diamondPicked) / electricityConsummed) - computeMalus();            
+                 performanceScore = (100*(dustVacuumed + diamondPicked) / electricityConsummed) - computeMalus();            
             
         }
 

@@ -40,13 +40,13 @@ namespace AgentAspirateur.Agent
                 {
                     if(deltaX > 0)
                     {
-                        Console.WriteLine("EAST");
+                       // Console.WriteLine("EAST");
                         MainWindow.environment.addEvent("MOVE:EAST");
                         deltaX--;
                     }
                     else
                     {
-                        Console.WriteLine("WEST");
+                       // Console.WriteLine("WEST");
                         MainWindow.environment.addEvent("MOVE:WEST");
                         deltaX++;
                     }
@@ -57,13 +57,13 @@ namespace AgentAspirateur.Agent
                 {
                     if (deltaY < 0)
                     {
-                        Console.WriteLine("NORTH");
+                        //Console.WriteLine("NORTH");
                         MainWindow.environment.addEvent("MOVE:NORTH");
                         deltaY++;
                     }
                     else
                     {
-                        Console.WriteLine("SOUTH");
+                       // Console.WriteLine("SOUTH");
                         MainWindow.environment.addEvent("MOVE:SOUTH");
                         deltaY--;
                     }
@@ -82,7 +82,7 @@ namespace AgentAspirateur.Agent
         public static void pickDiamond(int x, int y)
         {
             MainWindow.environment.addEvent("PICK");
-            Console.WriteLine("I pick diamond at " + x + "," + y);
+          //  Console.WriteLine("I pick diamond at " + x + "," + y);
         } 
 
         public static void vacuumDust(int x, int y)

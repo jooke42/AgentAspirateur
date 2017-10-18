@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AgentAspirateur.Agent;
+using AgentAspirateur.Environnement;
 
 namespace AgentAspirateur.TreeSearch
 {
@@ -11,7 +12,7 @@ namespace AgentAspirateur.TreeSearch
     class Asearch : SearchStrategy
     {
         Problem problem;
-
+       
         public Asearch(Problem _problem)
         {
             this.problem = _problem;          
@@ -19,54 +20,59 @@ namespace AgentAspirateur.TreeSearch
 
         public Node SearchPath(Problem p)
         {
-            Node startingNode = new Node(null, null, p.initialState, 0);   
-            return findBestNode(startingNode,startingNode.expand(p));          
+            List<Node> fringe = new List<Node>();
+            Node startingNode = new Node(null, null, p.initialState, 0);
+            fringe.Add(startingNode);          
+            Stack<Agent.Action> actions = new Stack<Agent.Action>();
+
+            while (fringe.Count() != 0)
+            {
+                Node node = fringe.First();
+                fringe.Remove(node);
+                if (p.goalCompleted(node.state))
+                    return node;
+                               
+
+                foreach (Node n in node.expand(p))
+                {
+                    n.setHeuristic(findBestNode(n));
+                    fringe.Add(n);                    
+                    fringe.Sort(Compare);
+                }
+            }
+
+            return null;
+             
             
         }
+            
+                       
 
-        private Node findBestNode(Node start, List<Node> node)
+      
+        private int findBestNode(Node start)
         {
-            int minHeuristic = Int32.MaxValue;
-            Node bestNode = null;
-            foreach(Node n in node)
+            int minHeuristic = 500;
+           
+            foreach (Room room in start.state.dustOrDiamondPos)
             {
-                int tmp = computeHeuristic(start, n);
+                int tmp = computeHeuristic(start, room.getCoordinate());
                 if (tmp < minHeuristic)
                 {
-
-                    minHeuristic = tmp;
-                    bestNode = n;
-                    //if (n.parentNode != null)
-                    //{
-                    //    if (n.parentNode.action != null)
-                    //    {
-                    //        if (n.parentNode.action.actionType == ActionType.VACUUM)
-                    //        {
-
-                    //            minHeuristic = 0;
-                    //        }
-                    //    }
-                    //}
+                    minHeuristic = tmp;                 
 
                 }
             }
-                       
 
-            return bestNode;
+            return minHeuristic;
         }
 
 
-        private int computeHeuristic(Node start, Node goal)
+        private int computeHeuristic(Node start, Position goal)
         {
             //Compute manhattan Distance between node stard and goal
-            int manhattanDistance = computeManhattanDistance(start.state.robotPos, goal.state.robotPos);
-            int heuristic = computeNumberOfDustOrDiamond(manhattanDistance, goal.state.robotPos);
-            Console.WriteLine("Comptage" + goal.state.dustOrDiamondPos.Count);
-
-            return manhattanDistance + goal.state.dustOrDiamondPos.Count; 
-
-
-            //Compue number of diamond and dust left MERCI MARTEAUX 
+            int manhattanDistance = computeManhattanDistance(start.state.robotPos, goal);
+            int heuristic = computeNumberOfDustOrDiamond(manhattanDistance, goal);
+            return manhattanDistance + start.state.dustOrDiamondPos.Count;         
 
         }
 
@@ -80,19 +86,8 @@ namespace AgentAspirateur.TreeSearch
         }
         
 
-        private void findBestDirection()
-        {
-
-
-        }
-
-        private Node closestNode(direction d)
-        {
-
-
-            return null;
-        }
-
+     
+       
         private int computeNumberOfDustOrDiamond(int manhattanDistance, Position p)
         {            
 
@@ -119,12 +114,20 @@ namespace AgentAspirateur.TreeSearch
             
         }
 
-       
+
+        private int Compare(Node n1, Node n2)
+        {
+            int eval1 = n1.getHeuristic() + n1.pathCost;
+            int eval2 = n2.getHeuristic() + n2.pathCost;
+            int eval = eval1.CompareTo(eval2);
+            return eval;
+        }
+
+      
 
 
-        
 
-        
+
 
     }
 

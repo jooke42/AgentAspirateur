@@ -11,18 +11,21 @@ namespace AgentAspirateur.Agent
     
     public class Agent
     {
-        private Position position;
         private Queue<Action> intention;
         private State belief;
+        private Environment environment;
         private Random rdm= new Random();
         public DustSensor dustSensors;
+        private PerformanceSensor performanceSensor;
         public DiamondSensor diamondSensor;
         Boolean Alive;
+        private int speed = 20;
 
-       
 
-        public Agent()
+
+        public Agent(Environment environment)
         {
+            this.environment = environment;
             Init();
         }
 
@@ -45,39 +48,25 @@ namespace AgentAspirateur.Agent
         {
             
             updateBelief();
-            displayBelief();
+           
 
             while (Alive)
             {
+
                 updateBelief();
-                Thread.Sleep(500);
+                displayBelief();
+
                 if (goalCompleted())
                     intention.Clear();
-
+                  
                 else
                 {
 
-                    //Update Environment
-                                    
-                    if(intention.Count() == 0) { 
-                        
-                        Problem p = new Problem(belief);
-                        //Choisit une action
-                        foreach(Action a in TreeSearch(p, new Asearch(p)).ToList())
-                        {
-                            intention.Enqueue(a);
-                        }
-                      }
-
-                    if(intention.Count != 0)
-                    {
-                        Action a = intention.Dequeue();
-                        Effectors.executeAction(a, belief.robotPos);                        
-                        belief.robotPos = a.applyTo;                      
-
-                    }
-                        
-                    Thread.Sleep(1000);
+                    think();
+                    act();                            
+                    learning();
+                    Thread.Sleep(1000 / speed);
+                    // Thread.Sleep(1000);
                     //Execute son action
 
                 }
@@ -88,10 +77,36 @@ namespace AgentAspirateur.Agent
 
         }
 
+        private void think()
+        {
+            if (intention.Count == 0)
+            {
+                Problem p = new Problem(belief);
+                //Choisit une action
+                foreach (Action action in TreeSearch(p, new UniformCostSearch()).ToList())
+                {
+                    
+                    intention.Enqueue(action);
+                }
+            }
+            
+        }
+
+        private void act()
+        {
+            if (intention.Count != 0)
+            {
+                Action a = intention.Dequeue();
+                Effectors.executeAction(a, belief.robotPos);                
+                belief.robotPos = a.applyTo;
+            }
+        }
+
 
         private void displayBelief()
         {
-            Console.WriteLine("Position du robot: " + this.belief.robotPos.x + " " + this.belief.robotPos.y);
+            Console.WriteLine("Belief du robot: " + this.belief.robotPos.x + " " + this.belief.robotPos.y);
+           // belief.dustOrDiamondPos.ToString();
 
         }
         private Stack<Action> TreeSearch(Problem p,SearchStrategy strategy)
@@ -115,14 +130,18 @@ namespace AgentAspirateur.Agent
         {
 
             return belief.dustOrDiamondPos.Count() == 0;
-        }
-        
+        }        
       
         private void updateBelief()
         {
+           
             belief = new State(MainWindow.environment.robot, MainWindow.environment.getMap());
         }
 
+        private void learning()
+        {
+           
+        }
         
     }
 }

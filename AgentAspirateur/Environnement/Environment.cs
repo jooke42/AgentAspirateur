@@ -29,6 +29,7 @@ namespace AgentAspirateur
         private readonly System.Timers.Timer _timerDust;
         private readonly System.Timers.Timer _timerDiamond;
         private Performance performance;
+        private int speed = 5;
        
 
 
@@ -37,12 +38,8 @@ namespace AgentAspirateur
             init();
             _timerDust = new System.Timers.Timer(5000); //Updates every 2 sec
             _timerDust.Elapsed += new System.Timers.ElapsedEventHandler(OnTimedEventDust);
-
             _timerDiamond = new System.Timers.Timer(7000); //Updates every 2 sec
             _timerDust.Elapsed += new System.Timers.ElapsedEventHandler(OnTimedEventDiamond);
-
-           
-
             performance = new Performance(this);
         }
 
@@ -50,7 +47,7 @@ namespace AgentAspirateur
         public void init()
         {
             this.sizeMap = new Size(10, 10);
-            this.robot = new Position(5, 7);
+            this.robot = new Position(5, 5);
             this.map = new Room[sizeMap.width][];
             for (int i = 0; i < map.Length; i++)
             {
@@ -78,12 +75,16 @@ namespace AgentAspirateur
         }
         public void start()
         {
+
+           /* map[2][2].setHasDust(true);
+            map[2][1].setHasDust(true);
+            map[2][3].setHasDust(true);*/
             _timerDust.Start();
             _timerDiamond.Start();
 
             while (true)
             {
-                Thread.Sleep(500);
+               // Thread.Sleep(500);
                 displayBelief();
                 while (events.Count != 0)
                 {
@@ -132,8 +133,9 @@ namespace AgentAspirateur
                            
                             break;
                         }
-                    //Thread.Sleep(500);
-                    
+                    Thread.Sleep(1000);
+                    //Thread.Sleep(1000);
+
                 }
                 
             }
@@ -142,7 +144,7 @@ namespace AgentAspirateur
         private void displayBelief()
         {
             // Console.WriteLine("Position du robot env: " + this.robot.x + " " + this.robot.y);
-            Console.WriteLine("Mesure de performance " + this.performance.getPerformance());
+          //  Console.WriteLine("Mesure de performance " + this.performance.getPerformance());
 
         }
         public void generateRandomDust()
@@ -171,7 +173,7 @@ namespace AgentAspirateur
                 int y = rndDiamond.Next(0, 10);
                 if (!map[x][y].getHasDiamond()) 
                 {
-                    map[x][y].setHasDiamond(false);
+                    map[x][y].setHasDiamond(true);
                     nbToCreate--;
                     Console.WriteLine("generating Diamond at (" + x + ";" + y + ")");
                     performance.addAction("ADD DIAMOND");
@@ -187,8 +189,11 @@ namespace AgentAspirateur
 
         public void addEvent(String _event)
         {
-            if(!this.events.Contains(_event))
+            if (!this.events.Contains(_event))
+            {
                 this.events.Enqueue(_event);
+               // Thread.Sleep(500);
+            }
         }
 
 
@@ -206,7 +211,10 @@ namespace AgentAspirateur
             return s;
         }
 
-       
+       public double getPerformance()
+        {
+            return performance.getPerformance();
+        }
 
 
     }

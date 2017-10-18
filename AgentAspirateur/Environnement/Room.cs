@@ -81,5 +81,7 @@ namespace AgentAspirateur.Environnement
         {
             return this.coordinate.Equals(other);
         }
+
+       
     }
 }

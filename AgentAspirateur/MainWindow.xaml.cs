@@ -32,7 +32,7 @@ namespace AgentAspirateur
             this.environmentThread = new Thread(environmentThreadRef);
             environmentThread.Start();
 
-            agent = new Agent.Agent();
+            agent = new Agent.Agent(environment);
             ThreadStart agentThreadRef = new ThreadStart(agent.Start);
             Console.WriteLine("In Main: Creating the Agent thread");
             this.agentThread = new Thread(agentThreadRef);

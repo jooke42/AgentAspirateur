@@ -14,9 +14,8 @@ namespace AgentAspirateur.Agent
         public int pathCost;
         public Action action;
         public State state;
-        private int F;
-        private int G;
-        private int H;
+        private int heuristic;
+       
      
 
 
@@ -30,9 +29,7 @@ namespace AgentAspirateur.Agent
             this.action = _action;
             this.state = _state;
             this.depth = _depth;
-            G = getG();
-            H = getH();
-            F = getF();
+           
         }
 
         public void setPathCost(int _pathCost)
@@ -114,24 +111,16 @@ namespace AgentAspirateur.Agent
             return state.robotPos.ToString();
         }
 
-        public int getG()
+       
+        public void setHeuristic(int heuristic)
         {
-
-            if (parentNode == null)
-                return 0;
-            return parentNode.G + 1;
-        }
-        public int getH()
-        {
-            return 0;
-        }
-
-        public int getF()
-        {
-            return G + H;
-        }
-              
+            this.heuristic = heuristic;
+        }     
       
+        public int getHeuristic()
+        {
+            return heuristic;
+        }
        
 
 

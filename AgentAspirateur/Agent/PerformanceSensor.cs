@@ -8,5 +8,16 @@ namespace AgentAspirateur.Agent
 {
     class PerformanceSensor
     {
+        Environment environnement;
+        public PerformanceSensor(Environment environnement)
+        {
+            this.environnement = environnement;
+
+        }
+
+        public double getPerformance()
+        {
+            return environnement.getPerformance();
+        }
     }
 }
