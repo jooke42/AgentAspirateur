@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AgentAspirateur.Environnement;
 
 namespace AgentAspirateur
 {
@@ -62,34 +63,34 @@ namespace AgentAspirateur
 
             return Math.Sqrt(x*x+y*y);
         }
-        public Position getPositionInDirection(direction d)
+        public Room getRoomInDirection(direction d)
         {
-            Position p = null;
+            Room p = null;
             switch (d)
             {
                 case direction.NORTH:
-                    p= new Position(this.x,this.y-1);
+                    p= new Room(this.x,this.y-1);
                     break;
                 case direction.EAST:
-                    p = new Position(this.x + 1, this.y);
+                    p = new Room(this.x + 1, this.y);
                     break;
                 case direction.SOUTH:
-                    p = new Position(this.x, this.y + 1);
+                    p = new Room(this.x, this.y + 1);
                     break;
                 case direction.WEST:
-                    p = new Position(this.x - 1, this.y);
+                    p = new Room(this.x - 1, this.y);
                     break;
                 case direction.NE:
-                    p = new Position(this.x + 1, this.y-1);
+                    p = new Room(this.x + 1, this.y-1);
                     break;
                 case direction.NW:
-                    p = new Position(this.x - 1, this.y - 1);
+                    p = new Room(this.x - 1, this.y - 1);
                     break;
                 case direction.SE:
-                    p = new Position(this.x + 1, this.y + 1);
+                    p = new Room(this.x + 1, this.y + 1);
                     break;
                 case direction.SW:
-                    p = new Position(this.x - 1, this.y + 1);
+                    p = new Room(this.x - 1, this.y + 1);
                     break;
             }
             return p;

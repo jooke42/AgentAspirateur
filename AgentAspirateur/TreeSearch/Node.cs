@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using AgentAspirateur.Environnement;
 namespace AgentAspirateur.Agent
 {
     public class Node : IComparable<Node>
@@ -60,9 +60,6 @@ namespace AgentAspirateur.Agent
                     nodes.Add(s);
                 }
                 return nodes;
-            
-           
-            return null;
         }
 
         public double actionCost(Node start, Node end)
@@ -75,11 +72,23 @@ namespace AgentAspirateur.Agent
         Dictionary<Action, State> successorFN(Problem p)
         {
             Dictionary<Action, State> result = new Dictionary<Action, State>();
-            foreach(Position pos in this.state.dustOrDiamondPos)
-            {                
-                Action newAct = new Action(pos, ActionType.VACUUM);
-                result.Add(newAct, this.state.GenerateNewStateFromAction(newAct));
-
+            foreach(Room room in this.state.dustOrDiamondPos)
+            {
+                if (room.getHasDust() && room.getHasDiamond())
+                {
+                    Action newAct = new Action(room.getCoordinate(), ActionType.PICK_VACUUM);
+                    result.Add(newAct, this.state.GenerateNewStateFromAction(newAct));
+                }
+                else if (room.getHasDiamond())
+                {
+                    Action newAct = new Action(room.getCoordinate(), ActionType.PICK);
+                    result.Add(newAct, this.state.GenerateNewStateFromAction(newAct));
+                }else if (room.getHasDust())
+                {
+                    Action newAct = new Action(room.getCoordinate(), ActionType.VACUUM);
+                    result.Add(newAct, this.state.GenerateNewStateFromAction(newAct));
+                }
+                
             }
 
             return result;

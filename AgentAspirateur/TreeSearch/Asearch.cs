@@ -79,28 +79,27 @@ namespace AgentAspirateur.TreeSearch
         {
 
             //North 
-
-
-
-
+            
             int count = manhattanDistance;
-            if (problem.initialState.dustOrDiamondPos.Contains(p.getPositionInDirection(direction.NORTH)) && p.getPositionInDirection(direction.NORTH).validPosition())
+            if (problem.initialState.dustOrDiamondPos.Contains(p.getRoomInDirection(direction.NORTH)) && p.getRoomInDirection(direction.NORTH).getCoordinate().validPosition())
                 count--;
-            if (problem.initialState.dustOrDiamondPos.Contains(p.getPositionInDirection(direction.EAST)) && p.getPositionInDirection(direction.EAST).validPosition())
+            if (problem.initialState.dustOrDiamondPos.Contains(p.getRoomInDirection(direction.EAST)) && p.getRoomInDirection(direction.EAST).getCoordinate().validPosition())
                 count--;
-            if (problem.initialState.dustOrDiamondPos.Contains(p.getPositionInDirection(direction.WEST)) && p.getPositionInDirection(direction.WEST).validPosition())
+            if (problem.initialState.dustOrDiamondPos.Contains(p.getRoomInDirection(direction.WEST)) && p.getRoomInDirection(direction.WEST).getCoordinate().validPosition())
                 count--;
-            if (problem.initialState.dustOrDiamondPos.Contains(p.getPositionInDirection(direction.SOUTH)) && p.getPositionInDirection(direction.WEST).validPosition())
+            if (problem.initialState.dustOrDiamondPos.Contains(p.getRoomInDirection(direction.SOUTH)) && p.getRoomInDirection(direction.WEST).getCoordinate().validPosition())
                 count--;
-            if (problem.initialState.dustOrDiamondPos.Contains(p.getPositionInDirection(direction.SE)) && p.getPositionInDirection(direction.SE).validPosition())
+            if (problem.initialState.dustOrDiamondPos.Contains(p.getRoomInDirection(direction.SE)) && p.getRoomInDirection(direction.SE).getCoordinate().validPosition())
                 count--;
-            if (problem.initialState.dustOrDiamondPos.Contains(p.getPositionInDirection(direction.SW)) && p.getPositionInDirection(direction.SW).validPosition())
+            if (problem.initialState.dustOrDiamondPos.Contains(p.getRoomInDirection(direction.SW)) && p.getRoomInDirection(direction.SW).getCoordinate().validPosition())
                 count--;
-            if (problem.initialState.dustOrDiamondPos.Contains(p.getPositionInDirection(direction.NE)) && p.getPositionInDirection(direction.NE).validPosition())
+            if (problem.initialState.dustOrDiamondPos.Contains(p.getRoomInDirection(direction.NE)) && p.getRoomInDirection(direction.NE).getCoordinate().validPosition())
                 count--;
-            if (problem.initialState.dustOrDiamondPos.Contains(p.getPositionInDirection(direction.NW)) && p.getPositionInDirection(direction.NW).validPosition())
+            if (problem.initialState.dustOrDiamondPos.Contains(p.getRoomInDirection(direction.NW)) && p.getRoomInDirection(direction.NW).getCoordinate().validPosition())
                 count--;
+
             return count;
+            
         }
 
        

@@ -13,8 +13,7 @@ namespace AgentAspirateur.Agent
     {
         private Position position;
         private Queue<Action> intention;
-        private List<Tile>[][] belief;
-        private List<Tile>[][] desire;
+        private State belief;
         private Random rdm= new Random();
         public DustSensor dustSensors;
         public DiamondSensor diamondSensor;
@@ -32,15 +31,6 @@ namespace AgentAspirateur.Agent
             dustSensors = new DustSensor();
             diamondSensor = new DiamondSensor();
             Alive = true;
-            this.desire = new List<Tile>[10][];
-            for (int i = 0; i < desire.Length; i++)
-            {
-                this.desire[i] = new List<Tile>[10];
-                for (int j = 0; j < desire[i].Length; j++)
-                {
-                    desire[i][j] = new List<Tile>() { Tile.FLOOR };
-                }
-            }
             intention = new Queue<Action>();
             //test
         }
@@ -59,19 +49,20 @@ namespace AgentAspirateur.Agent
 
             while (Alive)
             {
-
+                updateBelief();
                 if (goalCompleted())
                     intention.Clear();
 
                 else
                 {
 
-                    //Met à jour son environnement 
+                    //Update Environment
                                     
                     if(intention.Count() == 0)
                      {
-                        updateBelief();
-                        Problem p = new Problem(new State(position, belief), desire);
+                        
+                        Problem p = new Problem(belief);
+
                         //Choisit une action
                         foreach(Action a in TreeSearch(p, new Asearch(p)).ToList())
                         {
@@ -82,8 +73,8 @@ namespace AgentAspirateur.Agent
                     if(intention.Count != 0)
                     {
                         Action a = intention.Dequeue();
-                        Effectors.executeAction(a, position);                        
-                        position = a.applyTo;                      
+                        Effectors.executeAction(a, belief.robotPos);                        
+                        belief.robotPos = a.applyTo;                      
 
                     }
                         
@@ -101,7 +92,7 @@ namespace AgentAspirateur.Agent
 
         private void displayBelief()
         {
-            Console.WriteLine("Position du robot: " + this.position.x + " " + this.position.y);
+            Console.WriteLine("Position du robot: " + this.belief.robotPos.x + " " + this.belief.robotPos.y);
 
         }
         private Stack<Action> TreeSearch(Problem p,SearchStrategy strategy)
@@ -123,36 +114,14 @@ namespace AgentAspirateur.Agent
 
         private Boolean goalCompleted()
         {
-            for (int i = 0; i < desire.Length; i++)
-            {
-                for (int j = 0; j < desire[i].Length; j++)
-                {
-                    if (!mapsEquals(desire[i][j], belief[i][j]))
-                        return false;
-                }
-            }
-            return true;
+
+            return belief.dustOrDiamondPos.Count() == 0;
         }
         
-        private bool mapsEquals(List<Tile> m1, List<Tile> m2)
-        {
-            foreach (Tile t in m1)
-            {
-                if (!m2.Contains(t))
-                    return false;
-            }
-            foreach (Tile t in m2)
-            {
-                if (!m1.Contains(t))
-                    return false;
-            }
-            return true;
-        }
-        
+      
         private void updateBelief()
         {
-            belief = MainWindow.environment.getMap();
-            position = new Position(MainWindow.environment.robot);
+            belief = new State(MainWindow.environment.robot, MainWindow.environment.getMap());
         }
 
         

@@ -6,7 +6,7 @@ using System.Threading;
 using System.Windows.Threading;
 using System.Timers;
 using System.Collections.Generic;
-
+using AgentAspirateur.Environnement;
 
 namespace AgentAspirateur
 {
@@ -55,27 +55,34 @@ namespace AgentAspirateur
 
         private delegate void TimerDispatcherDelegate();
 
-        private ImageDrawing drawSprite(int x, int y, Tile tile)
+        private void drawRoom(Room r, DrawingGroup dg)
         {
-            ImageDrawing tileImage = new ImageDrawing();
-            tileImage.Rect = new Rect(x, y, 64, 64);
-            switch (tile)
+            int x = r.getCoordinate().x * 64;
+            int y = r.getCoordinate().y * 64;
+            dg.Children.Add(new ImageDrawing(
+                new BitmapImage(
+                new Uri(@"Ressources\sol_parquet_with_border.png", UriKind.Relative)),
+                new Rect(x,y, 64, 64)
+                ));
+
+            if (r.getHasDiamond())
             {
-                case Tile.FLOOR:
-                    tileImage.ImageSource = new BitmapImage(
-                new Uri(@"Ressources\sol_parquet_with_border.png", UriKind.Relative));
-                    break;
-                case Tile.DUST:
-                    tileImage.ImageSource = new BitmapImage(
-                new Uri(@"Ressources\dust.png", UriKind.Relative));
-                    break;
-                case Tile.DIAMOND:
-                    tileImage.ImageSource = new BitmapImage(
-                new Uri(@"Ressources\diamond.png", UriKind.Relative));
-                    break;
+                dg.Children.Add(new ImageDrawing(
+                new BitmapImage(
+                new Uri(@"Ressources\diamond.png", UriKind.Relative)),
+                new Rect(x, y, 64, 64)
+                ));
             }
-            return tileImage;
+            if (r.getHasDust())
+            {
+                dg.Children.Add(new ImageDrawing(
+                new BitmapImage(
+                new Uri(@"Ressources\dust.png", UriKind.Relative)),
+                new Rect(x, y, 64, 64)
+                ));
+            }
         }
+
         private ImageDrawing drawRobot(Position robot)
         {
             ImageDrawing robotImage = new ImageDrawing();
@@ -86,20 +93,14 @@ namespace AgentAspirateur
         }
         private void Update()
         {
-            int x, y;
-            List<AgentAspirateur.Tile>[][] map = environment.getMap();
+            Room[][] map = environment.getMap();
             DrawingGroup imageDrawings = new DrawingGroup();
             for (int i = 0; i < map.Length; i++)
             {
                 for (int j = 0; j < map[i].Length; j++)
                 {
-                    x = i * 64;
-                    y = j * 64;
-
-                    foreach (Tile t in map[i][j])
-                    {
-                        imageDrawings.Children.Add(drawSprite(x, y, t));
-                    }
+                    
+                    drawRoom(map[i][j], imageDrawings);
                 }
             }
             imageDrawings.Children.Add(drawRobot(environment.robot));
