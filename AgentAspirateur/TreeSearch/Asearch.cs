@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using AgentAspirateur.Agent;
 using AgentAspirateur.Environnement;
+using System.Collections;
 
 namespace AgentAspirateur.TreeSearch
 {
@@ -45,10 +46,10 @@ namespace AgentAspirateur.TreeSearch
              
             
         }
-            
-                       
 
       
+
+
         private int findBestNode(Node start)
         {
             int minHeuristic = 500;

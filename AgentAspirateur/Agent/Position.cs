@@ -96,6 +96,29 @@ namespace AgentAspirateur
             return p;
 
         }
+
+        public bool isNorth(Position other)
+        {
+            return other.x == this.x && other.y == this.y - 1;
+        }
+
+        public bool isSouth(Position other)
+        {
+
+            return other.x == this.x && other.y == this.y + 1;
+        }
+
+        public bool isEast(Position other)
+        {
+
+            return other.x == this.x +1 && other.y == this.y ;
+        }
+
+        public bool isWest(Position other)
+        {
+            return other.x == this.x - 1 && other.y == this.y;
+        }
+
         public bool validPosition(int xlim,int ylim)
         {
             return xlim > this.x && this.x >= 0 && this.y >= 0 && ylim > this.y;

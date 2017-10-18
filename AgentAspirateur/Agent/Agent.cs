@@ -12,6 +12,7 @@ namespace AgentAspirateur.Agent
     public class Agent
     {
         private Queue<Action> intention;
+        
         private State belief;
         private Environment environment;
         private Random rdm= new Random();
@@ -20,6 +21,16 @@ namespace AgentAspirateur.Agent
         public DiamondSensor diamondSensor;
         Boolean Alive;
         private int speed = 20;
+
+
+        //learning
+        private int numberOfAction;
+        private int lastPerformance;
+        private readonly List<int> _deltaPerformances = new List<int>();
+        private const int TailleListePerf = 100;
+        private bool _deltaNbAction = false;
+        private const double Alpha = 1.5; //facteur de non prise en compte des anciens deltaPerf
+
 
 
 
@@ -35,7 +46,8 @@ namespace AgentAspirateur.Agent
             diamondSensor = new DiamondSensor();
             Alive = true;
             intention = new Queue<Action>();
-            //test
+            numberOfAction = 10;
+            
         }
           
 
@@ -54,21 +66,18 @@ namespace AgentAspirateur.Agent
             {
 
                 updateBelief();
-                displayBelief();
+               // displayBelief();
 
                 if (goalCompleted())
                     intention.Clear();
                   
                 else
                 {
-
                     think();
                     act();                            
-                    learning();
-                    Thread.Sleep(1000 / speed);
-                    // Thread.Sleep(1000);
+                    learn();
+                    Thread.Sleep(1000 / speed);                    
                     //Execute son action
-
                 }
 
                 
@@ -94,8 +103,14 @@ namespace AgentAspirateur.Agent
 
         private void act()
         {
-            if (intention.Count != 0)
+            bool needsToStop = false;
+            int countAction = 0;
+            while (intention.Count != 0 && !needsToStop)
             {
+                countAction++;
+                if (countAction == numberOfAction)
+                    needsToStop = true;
+
                 Action a = intention.Dequeue();
                 Effectors.executeAction(a, belief.robotPos);                
                 belief.robotPos = a.applyTo;
@@ -138,9 +153,38 @@ namespace AgentAspirateur.Agent
             belief = new State(MainWindow.environment.robot, MainWindow.environment.getMap());
         }
 
-        private void learning()
+        private void learn()
         {
            
+            int perf = this.environment.getPerformance();
+             _deltaPerformances.Insert(0, perf - lastPerformance);
+            lastPerformance = perf;
+            double sum = 0;
+            foreach (int i in _deltaPerformances)
+            {               
+                sum += (double)i / (Alpha * Math.Exp((double)i));               
+            }
+
+            if (_deltaPerformances.Count == 1) { numberOfAction--; }
+
+            else if (sum < 0 )
+            {
+                if (_deltaNbAction) { numberOfAction++; }
+                else
+                {
+                    if (numberOfAction > 1) { numberOfAction--; }
+                }
+            }
+
+
+            else if (sum > 0 )
+            {
+                if (_deltaNbAction)
+                {
+                    if (numberOfAction > 1) { numberOfAction--; _deltaNbAction = false; }
+                }
+                else { numberOfAction++; _deltaNbAction = true; }
+            }
         }
         
     }

@@ -82,7 +82,9 @@ namespace AgentAspirateur
             int vacuumedandPicked = dustVacuumed + diamondPicked;
           
             if(electricityConsummed != 0)
-                 performanceScore = (100*(dustVacuumed + diamondPicked) / electricityConsummed) - computeMalus();            
+                 performanceScore = ( 100 * (dustVacuumed + diamondPicked) * electricityConsummed) - computeMalus();
+
+            Console.WriteLine("Performance " + performanceScore);
             
         }
 

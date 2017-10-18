@@ -85,6 +85,7 @@ namespace AgentAspirateur.Agent
                     Action newAct = new Action(room.getCoordinate(), ActionType.VACUUM);
                     result.Add(newAct, this.state.GenerateNewStateFromAction(newAct));
                 }
+
                 
             }
 

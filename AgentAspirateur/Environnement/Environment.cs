@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Timers;
 using AgentAspirateur.Environnement;
+using System.Collections;
 
 namespace AgentAspirateur
 {
@@ -20,7 +21,9 @@ namespace AgentAspirateur
 
     public class Environment
     {
-        private Queue<string> events = new Queue<string>();
+
+        public static volatile Queue events = new Queue();
+        //private Queue<string> events = new Queue<string>();
         public Position robot;
         private Room[][] map;
         Random rndDust = new Random();
@@ -29,8 +32,15 @@ namespace AgentAspirateur
         private readonly System.Timers.Timer _timerDust;
         private readonly System.Timers.Timer _timerDiamond;
         private Performance performance;
-        private int speed = 5;
-       
+
+        //Mesure de performance 
+
+        private int malusDiamondVacuumed = 5;
+        private const int newDust = 1;
+        private const int newDiamond = 1;
+  
+        private int performanceScore = 0;
+     
 
 
         public Environment()
@@ -84,12 +94,12 @@ namespace AgentAspirateur
 
             while (true)
             {
-               // Thread.Sleep(500);
+                Thread.Sleep(500);
                 displayBelief();
                 while (events.Count != 0)
                 {
                    
-                    string evt = events.Dequeue();
+                    string evt = (string) events.Dequeue();
                   /**
                          * PICK
                          * VACUUM
@@ -102,23 +112,30 @@ namespace AgentAspirateur
                         switch (action)
                         {
                             case "PICK":
+                            if (map[robot.x][robot.y].getHasDiamond())
+                            {
                                 map[robot.x][robot.y].setHasDiamond(false);
-                                performance.addAction("PICK");
+                                performanceScore -= newDiamond;
+
+                            }
+                                
+                               // performance.addAction("PICK");
                               
                             break;
                             case "VACUUM":
                             if (map[robot.x][robot.y].getHasDust())
                             {
                                 map[robot.x][robot.y].setHasDust(false);
-                                performance.addAction("VACUUM DUST");
-                               
+                                //performance.addAction("VACUUM DUST");
+                                performanceScore -= newDust;
                             }
 
                             if (map[robot.x][robot.y].getHasDiamond())
                             {
                                 map[robot.x][robot.y].setHasDiamond(false);
-                                performance.addAction("VACUUM DIAMOND");
-                              
+                                performanceScore += malusDiamondVacuumed;
+                                // performance.addAction("VACUUM DIAMOND");
+
                             }
                             
                             break;
@@ -128,12 +145,12 @@ namespace AgentAspirateur
                                  if (newPos.validPosition(this.sizeMap.width, this.sizeMap.height))
                                  {
                                     robot = newPos;
-                                    performance.addAction("MOVE");
+                                    //performance.addAction("MOVE");
                                  }
                            
                             break;
                         }
-                    Thread.Sleep(1000);
+                    Thread.Sleep(500);
                     //Thread.Sleep(1000);
 
                 }
@@ -159,7 +176,8 @@ namespace AgentAspirateur
                     map[x][y].setHasDust(true);
                     nbToCreate--;
                     Console.WriteLine("generating dirt at (" + x + ";" + y + ")");
-                    performance.addAction("ADD DUST");
+                    performanceScore += newDust;
+                    //performance.addAction("ADD DUST");
                    
                 }
             }
@@ -176,7 +194,8 @@ namespace AgentAspirateur
                     map[x][y].setHasDiamond(true);
                     nbToCreate--;
                     Console.WriteLine("generating Diamond at (" + x + ";" + y + ")");
-                    performance.addAction("ADD DIAMOND");
+                    performanceScore += newDiamond;
+                   // performance.addAction("ADD DIAMOND");
                    
                 }
             }
@@ -187,14 +206,14 @@ namespace AgentAspirateur
             return this.map;
         }
 
-        public void addEvent(String _event)
+       /* public void addEvent(String _event)
         {
             if (!this.events.Contains(_event))
             {
                 this.events.Enqueue(_event);
                // Thread.Sleep(500);
             }
-        }
+        }*/
 
 
         public string toString()
@@ -211,9 +230,9 @@ namespace AgentAspirateur
             return s;
         }
 
-       public double getPerformance()
+       public int getPerformance()
         {
-            return performance.getPerformance();
+            return performanceScore;
         }
 
 

@@ -24,6 +24,9 @@ namespace AgentAspirateur.Agent
                         move(action, robot);
                         vacuumDust(robot.x, robot.y);
                         break;
+
+                    
+
                 }
             }
         }
@@ -41,13 +44,14 @@ namespace AgentAspirateur.Agent
                     if(deltaX > 0)
                     {
                        // Console.WriteLine("EAST");
-                        MainWindow.environment.addEvent("MOVE:EAST");
+                        Environment.events.Enqueue("MOVE:EAST");
                         deltaX--;
                     }
                     else
                     {
-                       // Console.WriteLine("WEST");
-                        MainWindow.environment.addEvent("MOVE:WEST");
+                        // Console.WriteLine("WEST");
+                        //MainWindow.environment.addEvent("MOVE:WEST");
+                        Environment.events.Enqueue("MOVE:WEST");
                         deltaX++;
                     }
                     
@@ -58,13 +62,15 @@ namespace AgentAspirateur.Agent
                     if (deltaY < 0)
                     {
                         //Console.WriteLine("NORTH");
-                        MainWindow.environment.addEvent("MOVE:NORTH");
+                        //MainWindow.environment.addEvent("MOVE:NORTH");
+                        Environment.events.Enqueue("MOVE:NORTH");
                         deltaY++;
                     }
                     else
                     {
                        // Console.WriteLine("SOUTH");
-                        MainWindow.environment.addEvent("MOVE:SOUTH");
+                       //MainWindow.environment.addEvent("MOVE:SOUTH");
+                        Environment.events.Enqueue("MOVE:SOUTH");
                         deltaY--;
                     }
                     doX = true;
@@ -81,14 +87,16 @@ namespace AgentAspirateur.Agent
 
         public static void pickDiamond(int x, int y)
         {
-            MainWindow.environment.addEvent("PICK");
-          //  Console.WriteLine("I pick diamond at " + x + "," + y);
+            //MainWindow.environment.addEvent("PICK");
+            Environment.events.Enqueue("PICK");
+            //  Console.WriteLine("I pick diamond at " + x + "," + y);
         } 
 
         public static void vacuumDust(int x, int y)
         {
-            MainWindow.environment.addEvent("VACUUM");
-            Console.WriteLine("I vacuum dust at " + x + "," + y);
+            //MainWindow.environment.addEvent("VACUUM");
+            Environment.events.Enqueue("VACUUM");
+            //  Console.WriteLine("I vacuum dust at " + x + "," + y);
         }
 
         public static void PickAndVacuum(int x, int y)
