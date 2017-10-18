@@ -59,17 +59,16 @@ namespace AgentAspirateur.Agent
 
             while (Alive)
             {
-
+                updateBelief();
                 if (goalCompleted())
                     intention.Clear();
 
                 else
                 {
-
                     //Met à jour son environnement 
                                     
                     if(intention.Count() == 0)
-                     {
+                    {
                         updateBelief();
                         Problem p = new Problem(new State(position, belief), desire);
                         //Choisit une action
@@ -77,7 +76,7 @@ namespace AgentAspirateur.Agent
                         {
                             intention.Enqueue(a);
                         }
-                      }
+                    }
 
                     if(intention.Count != 0)
                     {
@@ -89,7 +88,6 @@ namespace AgentAspirateur.Agent
                         
                     Thread.Sleep(1000);
                     //Execute son action
-
                 }
 
                 

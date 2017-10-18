@@ -33,8 +33,17 @@ namespace AgentAspirateur.TreeSearch
                 int tmp = computeHeuristic(start, n);
                 if (tmp < minHeuristic)
                 {
+
                     minHeuristic = tmp;
                     bestNode = n;
+                    if (n.parentNode != null)
+                    {
+                        if (n.parentNode.action != null)
+                        {
+                            
+                            minHeuristic = 0;
+                        }
+                    }
                     
                 }
             }
@@ -48,7 +57,10 @@ namespace AgentAspirateur.TreeSearch
             //Compute manhattan Distance between node stard and goal
             int manhattanDistance = computeManhattanDistance(start.state.robotPos, goal.state.robotPos);
             int heuristic = computeNumberOfDustOrDiamond(manhattanDistance, goal.state.robotPos);
-            return  manhattanDistance ;
+            return manhattanDistance + computeNumberOfDustOrDiamond(manhattanDistance, goal.state.robotPos);
+
+
+            //Compue number of diamond and dust left MERCI MARTEAUX 
 
         }
 
@@ -76,12 +88,7 @@ namespace AgentAspirateur.TreeSearch
         }
 
         private int computeNumberOfDustOrDiamond(int manhattanDistance, Position p)
-        {
-
-            //North 
-
-
-
+        {            
 
             int count = manhattanDistance;
             if (problem.initialState.dustOrDiamondPos.Contains(p.getPositionInDirection(direction.NORTH)) && p.getPositionInDirection(direction.NORTH).validPosition())
@@ -100,6 +107,9 @@ namespace AgentAspirateur.TreeSearch
                 count--;
             if (problem.initialState.dustOrDiamondPos.Contains(p.getPositionInDirection(direction.NW)) && p.getPositionInDirection(direction.NW).validPosition())
                 count--;
+
+            
+
             return count;
         }
 
