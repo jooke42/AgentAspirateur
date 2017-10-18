@@ -12,7 +12,7 @@ namespace AgentAspirateur.Agent
         public PerformanceSensor(Environment environnement)
         {
             this.environnement = environnement;
-
+            
         }
 
         public double getPerformance()

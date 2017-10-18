@@ -6,7 +6,6 @@ using System.Threading;
 using System.Windows.Threading;
 using System.Timers;
 using System.Collections.Generic;
-using AgentAspirateur.Environnement;
 
 namespace AgentAspirateur
 {

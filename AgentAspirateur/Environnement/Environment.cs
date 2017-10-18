@@ -4,9 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Timers;
-using AgentAspirateur.Environnement;
 
-namespace AgentAspirateur.Environnement
+namespace AgentAspirateur
 {
     public struct Size
     {
