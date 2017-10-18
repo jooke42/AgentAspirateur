@@ -37,7 +37,7 @@ namespace AgentAspirateur
             this.agentThread = new Thread(agentThreadRef);
             agentThread.Start();
 
-            _timer = new System.Timers.Timer(250); //Updates every 2 sec
+            _timer = new System.Timers.Timer(30); //Updates every 2 sec
             _timer.Elapsed += new ElapsedEventHandler(OnTimedEvent);
             _timer.Start();
 
@@ -84,11 +84,19 @@ namespace AgentAspirateur
 
         private ImageDrawing drawRobot(Position robot)
         {
+            
             ImageDrawing robotImage = new ImageDrawing();
             robotImage.Rect = new Rect(robot.x * 64, robot.y * 64, 64, 64);
             robotImage.ImageSource = new BitmapImage(
                 new Uri(@"Ressources\robot.png", UriKind.Relative));
             return robotImage;
+        }
+
+        private void updateInfoRobot()
+        {
+            ValuePosRobot.Text = agent.getBelief().robotPos.ToString();
+            listDustDiamond.ItemsSource = agent.getBelief().dustOrDiamondPos;
+
         }
         private void Update()
         {
@@ -110,7 +118,7 @@ namespace AgentAspirateur
             //
             DrawingImage drawingImageSource = new DrawingImage(imageDrawings);
 
-
+            updateInfoRobot();
 
             // Freeze the DrawingImage for performance benefits.
             drawingImageSource.Freeze();
@@ -126,6 +134,5 @@ namespace AgentAspirateur
 
         }
 
-        
     }
 }

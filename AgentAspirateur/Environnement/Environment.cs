@@ -35,9 +35,9 @@ namespace AgentAspirateur
         public Environment()
         {
             init();
-            _timerDust = new System.Timers.Timer(5000); //Updates every 2 sec
+            _timerDust = new System.Timers.Timer(10000); //Updates every 2 sec
             _timerDust.Elapsed += new System.Timers.ElapsedEventHandler(OnTimedEventDust);
-            _timerDiamond = new System.Timers.Timer(7000); //Updates every 2 sec
+            _timerDiamond = new System.Timers.Timer(10000); //Updates every 2 sec
             _timerDust.Elapsed += new System.Timers.ElapsedEventHandler(OnTimedEventDiamond);
             performance = new Performance(this);
         }
@@ -132,7 +132,7 @@ namespace AgentAspirateur
                            
                             break;
                         }
-                    Thread.Sleep(1000);
+                    //Thread.Sleep(1000);
                     //Thread.Sleep(1000);
 
                 }
@@ -148,7 +148,7 @@ namespace AgentAspirateur
         }
         public void generateRandomDust()
         {
-            int nbToCreate = rndDust.Next(0, 3);
+            int nbToCreate = rndDust.Next(1, 3);
             while (nbToCreate > 0)
             {
                 int x = rndDust.Next(0, 10);
@@ -165,7 +165,7 @@ namespace AgentAspirateur
         }
         public void generateRandomDiamond()
         {
-            int nbToCreate = rndDiamond.Next(0, 2);
+            int nbToCreate = rndDiamond.Next(1, 2);
             while(nbToCreate > 0)
             {
                 int x = rndDiamond.Next(0, 10);
@@ -191,7 +191,7 @@ namespace AgentAspirateur
             if (!this.events.Contains(_event))
             {
                 this.events.Enqueue(_event);
-               // Thread.Sleep(500);
+               
             }
         }
 

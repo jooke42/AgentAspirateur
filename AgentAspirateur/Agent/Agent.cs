@@ -12,7 +12,7 @@ namespace AgentAspirateur.Agent
     
     public class Agent
     {
-        private Queue<Action> intention;
+        private Queue<SimpleActionType> intention;
         private State belief;
         private Environment environment;
         private Random rdm= new Random();
@@ -35,7 +35,7 @@ namespace AgentAspirateur.Agent
             dustSensors = new DustSensor();
             diamondSensor = new DiamondSensor();
             Alive = true;
-            intention = new Queue<Action>();
+            intention = new Queue<SimpleActionType>();
             //test
         }
           
@@ -54,23 +54,10 @@ namespace AgentAspirateur.Agent
             while (Alive)
             {
 
-                updateBelief();
-                displayBelief();
-
-                if (goalCompleted())
-                    intention.Clear();
-                  
-                else
-                {
-
-                    think();
-                    act();                            
-                    learning();
-                    Thread.Sleep(1000 / speed);
-                    // Thread.Sleep(1000);
-                    //Execute son action
-
-                }
+               think();
+               act();                            
+               learning();
+               Thread.Sleep(1000 / speed);
 
                 
             }
@@ -80,14 +67,27 @@ namespace AgentAspirateur.Agent
 
         private void think()
         {
+            if (goalCompleted())
+            {
+                intention.Clear();
+                Thread.Sleep(1000);
+            }
+                
+
             if (intention.Count == 0)
             {
+                updateBelief();
                 Problem p = new Problem(belief);
                 //Choisit une action
+                Position robotIterationPos = new Position(this.belief.robotPos);
                 foreach (Action action in TreeSearch(p, new UniformCostSearch()).ToList())
                 {
-                    
-                    intention.Enqueue(action);
+                    foreach (SimpleActionType simpleAction in action.generateSimpleAction(robotIterationPos))
+                    {
+                        intention.Enqueue(simpleAction);
+                    }
+
+                        
                 }
             }
             
@@ -97,9 +97,8 @@ namespace AgentAspirateur.Agent
         {
             if (intention.Count != 0)
             {
-                Action a = intention.Dequeue();
-                Effectors.executeAction(a, belief.robotPos);                
-                belief.robotPos = a.applyTo;
+                SimpleActionType a = intention.Dequeue();
+                Effectors.executeAction(a, belief.robotPos);
             }
         }
 
@@ -125,6 +124,11 @@ namespace AgentAspirateur.Agent
            actionList.Reverse();
             return actionList;
 
+        }
+
+        public State getBelief()
+        {
+            return belief;
         }
 
         private Boolean goalCompleted()

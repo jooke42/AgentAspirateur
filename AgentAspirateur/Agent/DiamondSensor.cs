@@ -12,7 +12,7 @@ namespace AgentAspirateur.Agent
         override
          public Boolean check(int x, int y, Room[][] map)
         {
-            return map[x][y].getHasDiamond();
+            return map[x][y].hasDiamond;
         }
         override
         public List<Position> getPosition(Room[][] map)
@@ -23,7 +23,7 @@ namespace AgentAspirateur.Agent
             {                
                 for (int j = 0; j < map.GetLength(1); j++)
                 {
-                    if (map[i][j].getHasDiamond())
+                    if (map[i][j].hasDiamond)
                         position.Add(new Position(i, j));
 
                 }
