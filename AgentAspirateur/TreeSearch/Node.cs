@@ -130,38 +130,9 @@ namespace AgentAspirateur.Agent
         {
             return G + H;
         }
-
-        public int computeHeuristic(Node other)
-        {
-
-            //G : Incrémenter de 1 
-            int G = 0;
-            if (parentNode == null)
-                G= 0;
-            else
-                G = parentNode.G + 1;
-
-            //H si il y a un diamand ou une poussière, le coût diminue
-            H = getHeuristic(this, other);
-            setPathCost(H + G);
-            return pathCost;
-        }
-
+              
       
-        private int getHeuristic(Node start, Node end)
-        {
-          
-            return computeManhattanDistance(start.state.robotPos, end.state.robotPos);
-        }
-
-        private int computeManhattanDistance(Position startPoint, Position goalPoint)
-        {
-            int absX = Math.Abs(goalPoint.x - startPoint.x);
-            int absY = Math.Abs(goalPoint.y - startPoint.y);
-            int manhattanDistance = absX + absY;
-            return manhattanDistance;
-
-        }
+       
 
 
 

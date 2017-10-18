@@ -17,7 +17,7 @@ namespace AgentAspirateur.Agent
                 {
                     case ActionType.PICK:
                         move(action, robot);
-                        pickDiamond(action.applyTo.x, action.applyTo.y);
+                        pickDiamond(robot.x, robot.y);
                         break;
 
                     case ActionType.VACUUM:
