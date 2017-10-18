@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
 using AgentAspirateur.TreeSearch;
+using AgentAspirateur.Environnement;
+using AgentAspirateur.Agent;
 
 namespace AgentAspirateur.Agent
 {
@@ -13,7 +15,7 @@ namespace AgentAspirateur.Agent
     {
         private Queue<Action> intention;
         private State belief;
-        private Environment environment;
+        private Environnement.Environment environment;
         private Random rdm= new Random();
         public DustSensor dustSensors;
         private PerformanceSensor performanceSensor;
@@ -23,7 +25,7 @@ namespace AgentAspirateur.Agent
 
 
 
-        public Agent(Environment environment)
+        public Agent(Environnement.Environment environment)
         {
             this.environment = environment;
             Init();

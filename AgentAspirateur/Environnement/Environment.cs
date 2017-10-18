@@ -6,7 +6,7 @@ using System.Threading;
 using System.Timers;
 using AgentAspirateur.Environnement;
 
-namespace AgentAspirateur
+namespace AgentAspirateur.Environnement
 {
     public struct Size
     {
