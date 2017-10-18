@@ -3,100 +3,51 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using System.Threading;
 namespace AgentAspirateur.Agent
 {
     static class Effectors
     {
-        
-        public static void executeAction(Action action, Position robot)
+        public static int SpeedFactor = 2;
+        public static void executeAction(SimpleActionType action, Position robot)
         {
+            Thread.Sleep(1000 / SpeedFactor);
             if (action != null)
             {
-                switch (action.actionType)
+                switch (action)
                 {
-                    case ActionType.PICK:
-                        move(action, robot);
+                    case SimpleActionType.PICK:
                         pickDiamond(robot.x, robot.y);
                         break;
 
-                    case ActionType.VACUUM:
-                        move(action, robot);
+                    case SimpleActionType.VACUUM:
                         vacuumDust(robot.x, robot.y);
                         break;
-
-                    
-
+                    case SimpleActionType.TOP:
+                        MainWindow.environment.addEvent("MOVE:NORTH");
+                        break;
+                    case SimpleActionType.BOTTOM:
+                        MainWindow.environment.addEvent("MOVE:SOUTH");
+                        break;
+                    case SimpleActionType.LEFT:
+                        MainWindow.environment.addEvent("MOVE:WEST");
+                        break;
+                    case SimpleActionType.RIGHT:
+                        MainWindow.environment.addEvent("MOVE:EAST");
+                        break;
                 }
             }
         }
-        public static void move(Action a, Position robot)
-        {
-
-            int deltaX, deltaY;
-            deltaX = a.applyTo.x - robot.x;
-            deltaY = a.applyTo.y- robot.y;
-            bool doX = true;
-            while(deltaX !=0 || deltaY != 0)
-            {
-                if(deltaX != 0 && doX)
-                {
-                    if(deltaX > 0)
-                    {
-                       // Console.WriteLine("EAST");
-                        Environment.events.Enqueue("MOVE:EAST");
-                        deltaX--;
-                    }
-                    else
-                    {
-                        // Console.WriteLine("WEST");
-                        //MainWindow.environment.addEvent("MOVE:WEST");
-                        Environment.events.Enqueue("MOVE:WEST");
-                        deltaX++;
-                    }
-                    
-                    doX = false;
-                }
-                else if(deltaY != 0)
-                {
-                    if (deltaY < 0)
-                    {
-                        //Console.WriteLine("NORTH");
-                        //MainWindow.environment.addEvent("MOVE:NORTH");
-                        Environment.events.Enqueue("MOVE:NORTH");
-                        deltaY++;
-                    }
-                    else
-                    {
-                       // Console.WriteLine("SOUTH");
-                       //MainWindow.environment.addEvent("MOVE:SOUTH");
-                        Environment.events.Enqueue("MOVE:SOUTH");
-                        deltaY--;
-                    }
-                    doX = true;
-                    
-                }
-
-                if (deltaX != 0 && !doX && deltaY == 0)
-                    doX = true;
-
-            }       
-            
-        }
-
-
         public static void pickDiamond(int x, int y)
         {
-            //MainWindow.environment.addEvent("PICK");
-            Environment.events.Enqueue("PICK");
-            //  Console.WriteLine("I pick diamond at " + x + "," + y);
-        } 
+            MainWindow.environment.addEvent("PICK");
+            Console.WriteLine("I pick diamond at " + x + "," + y);
+        }
 
         public static void vacuumDust(int x, int y)
         {
-            //MainWindow.environment.addEvent("VACUUM");
-            Environment.events.Enqueue("VACUUM");
-            //  Console.WriteLine("I vacuum dust at " + x + "," + y);
+            MainWindow.environment.addEvent("VACUUM");
+            Console.WriteLine("I vacuum dust at " + x + "," + y);
         }
 
         public static void PickAndVacuum(int x, int y)

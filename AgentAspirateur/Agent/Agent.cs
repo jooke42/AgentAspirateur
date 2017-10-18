@@ -5,31 +5,31 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
 using AgentAspirateur.TreeSearch;
+using AgentAspirateur.Agent;
 
 namespace AgentAspirateur.Agent
 {
     
     public class Agent
     {
-        private Queue<Action> intention;
-        
+         
+        private Queue<SimpleActionType> intention;
         private State belief;
         private Environment environment;
         private Random rdm= new Random();
-        public DustSensor dustSensors;
-        private PerformanceSensor performanceSensor;
+        public DustSensor dustSensors;   
         public DiamondSensor diamondSensor;
         Boolean Alive;
         private int speed = 20;
 
 
         //learning
-        private int numberOfAction;
+        public int numberOfAction;
         private int lastPerformance;
-        private readonly List<int> _deltaPerformances = new List<int>();
-        private const int TailleListePerf = 100;
+        private readonly List<int> performances = new List<int>();
+       
         private bool _deltaNbAction = false;
-        private const double Alpha = 1.5; //facteur de non prise en compte des anciens deltaPerf
+        private const double alpha = 1.5; 
 
 
 
@@ -45,9 +45,9 @@ namespace AgentAspirateur.Agent
             dustSensors = new DustSensor();
             diamondSensor = new DiamondSensor();
             Alive = true;
-            intention = new Queue<Action>();
-            numberOfAction = 10;
-            
+            numberOfAction = 5;           
+            intention = new Queue<SimpleActionType>();
+
         }
           
 
@@ -64,22 +64,10 @@ namespace AgentAspirateur.Agent
 
             while (Alive)
             {
-
-                updateBelief();
-               // displayBelief();
-
-                if (goalCompleted())
-                    intention.Clear();
-                  
-                else
-                {
-                    think();
-                    act();                            
-                    learn();
-                    Thread.Sleep(1000 / speed);                    
-                    //Execute son action
-                }
-
+               think();
+               act();                            
+               learn();
+               Thread.Sleep(1000 / speed);
                 
             }
 
@@ -88,14 +76,27 @@ namespace AgentAspirateur.Agent
 
         private void think()
         {
+            if (goalCompleted())
+            {
+                intention.Clear();
+                Thread.Sleep(1000);
+            }
+                
+
             if (intention.Count == 0)
             {
+                updateBelief();
                 Problem p = new Problem(belief);
                 //Choisit une action
-                foreach (Action action in TreeSearch(p, new UniformCostSearch()).ToList())
+                Position robotIterationPos = new Position(this.belief.robotPos);
+                foreach (Action action in TreeSearch(p, new Asearch(p)).ToList())
                 {
-                    
-                    intention.Enqueue(action);
+                    foreach (SimpleActionType simpleAction in action.generateSimpleAction(robotIterationPos))
+                    {
+                        intention.Enqueue(simpleAction);
+                    }
+
+                        
                 }
             }
             
@@ -109,11 +110,14 @@ namespace AgentAspirateur.Agent
             {
                 countAction++;
                 if (countAction == numberOfAction)
-                    needsToStop = true;
+                   {
+                        needsToStop = true;
+                   }
+                   
 
-                Action a = intention.Dequeue();
-                Effectors.executeAction(a, belief.robotPos);                
-                belief.robotPos = a.applyTo;
+                SimpleActionType a = intention.Dequeue();
+                Effectors.executeAction(a, belief.robotPos);
+
             }
         }
 
@@ -141,6 +145,11 @@ namespace AgentAspirateur.Agent
 
         }
 
+        public State getBelief()
+        {
+            return belief;
+        }
+
         private Boolean goalCompleted()
         {
 
@@ -155,36 +164,51 @@ namespace AgentAspirateur.Agent
 
         private void learn()
         {
-           
-            int perf = this.environment.getPerformance();
-             _deltaPerformances.Insert(0, perf - lastPerformance);
-            lastPerformance = perf;
-            double sum = 0;
-            foreach (int i in _deltaPerformances)
-            {               
-                sum += (double)i / (Alpha * Math.Exp((double)i));               
-            }
-
-            if (_deltaPerformances.Count == 1) { numberOfAction--; }
-
-            else if (sum < 0 )
+            int max = 100;
+            if (performances.Count == max)
             {
-                if (_deltaNbAction) { numberOfAction++; }
-                else
-                {
-                    if (numberOfAction > 1) { numberOfAction--; }
-                }
+                performances.RemoveAt(max - 1);
+            }
+            int currentPerf = this.environment.getPerformance();
+            performances.Insert(0, currentPerf - lastPerformance);
+            lastPerformance = currentPerf;
+
+            double sum = 0;
+
+            for (int i= 0; i< performances.Count; i++)            
+            {               
+                sum += (double)performances[i] / (alpha * Math.Exp((double)i));               
+            }
+
+            if (performances.Count == 1) { numberOfAction--; }
+
+            else if (sum < 0 && Math.Abs(sum) > 1)
+            {
+                if (_deltaNbAction)
+                    numberOfAction++; 
+                else                
+                   if (numberOfAction > 1) 
+                        numberOfAction--;                  
+                
             }
 
 
-            else if (sum > 0 )
+            else if (sum > 0 && Math.Abs(sum) > 1)
             {
                 if (_deltaNbAction)
                 {
-                    if (numberOfAction > 1) { numberOfAction--; _deltaNbAction = false; }
+                    if (numberOfAction > 1) {
+                        numberOfAction--;
+                        _deltaNbAction = false;
+                    }
                 }
-                else { numberOfAction++; _deltaNbAction = true; }
-            }
+                else
+                {
+                    numberOfAction++;
+                    _deltaNbAction = true;
+                }
+            }          
+            
         }
         
     }

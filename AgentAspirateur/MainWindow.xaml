@@ -5,8 +5,38 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AgentAspirateur"
         mc:Ignorable="d"
-        Title="Environment" Width="670" Height="690" ResizeMode="NoResize">
-    <Grid>
-        <Image x:Name="mapImage" Height="640" Margin="10,10,0,0" Width="640" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-    </Grid>
+        Title="Environment" Width="1008.4" Height="690" ResizeMode="NoResize">
+    <DockPanel>
+        <Canvas DockPanel.Dock="Left"  Height="640" Margin="10,10,0,0" Width="525">
+            <Image x:Name="mapImage"/>
+        </Canvas>
+        <Grid HorizontalAlignment="Right" Height="640"  Width="337" Margin="0,11" RenderTransformOrigin="0.781,0.493">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="0*"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock HorizontalAlignment="Center" Text="Robot Info" VerticalAlignment="Top" Margin="19,16,191.2,0" FontWeight="Bold" Width="69" Height="16"/>
+            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Top" Margin="50,59,172.2,0" Width="57" Height="16" ><Run Text="Position"/><Run Text=" :"/></TextBlock>
+            <TextBlock x:Name="ValuePosRobot" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="107,59,115.2,0" Width="57" Height="16" ><Run FontWeight="Bold" Text="N/A"/><LineBreak/><Run/></TextBlock>
+            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Top" Margin="31,37,191.2,0" Width="57" Text="Belief:" Height="16" />
+            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Top" Margin="50,80,134.2,0" Width="95" Height="16" ><Run Text="Dust+Diamond"/><Run Text=" :"/></TextBlock>
+            <ListView x:Name="listDustDiamond" Height="179" Margin="0,101,0,0" VerticalAlignment="Top"  HorizontalAlignment="Left" Width="269">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="Pos" Width="80" DisplayMemberBinding="{Binding coordinate}" />
+                        <GridViewColumn Header="diamond" Width="80" DisplayMemberBinding="{Binding hasDiamond}" />
+                        <GridViewColumn Header="dust" Width="80" DisplayMemberBinding="{Binding hasDust}" />
+                    </GridView>
+                </ListView.View>
+            </ListView>
+            <Label Content="Nombre d'actions avant mise à jour du belief" HorizontalAlignment="Left" Margin="10,285,0,0" VerticalAlignment="Top"/>
+            <TextBlock HorizontalAlignment="Left" Margin="112,59,0,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top"/>
+            <TextBlock x:Name="apprentissage" HorizontalAlignment="Left" Margin="260,290,0,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" RenderTransformOrigin="0.378,0.042" Width="67"/>
+            <Label Content="Score de performance" HorizontalAlignment="Left" Margin="128,306,0,0" VerticalAlignment="Top"/>
+            <TextBlock x:Name="performance" HorizontalAlignment="Left" Margin="260,311,0,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" RenderTransformOrigin="0.378,0.042" Width="67"/>
+
+        </Grid>
+
+
+    </DockPanel>
 </Window>

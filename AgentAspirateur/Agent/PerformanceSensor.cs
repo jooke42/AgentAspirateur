@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace AgentAspirateur.Agent
 {
-    class PerformanceSensor
+    public class PerformanceSensor
     {
         Environment environnement;
         public PerformanceSensor(Environment environnement)
         {
             this.environnement = environnement;
-
+            
         }
 
         public double getPerformance()

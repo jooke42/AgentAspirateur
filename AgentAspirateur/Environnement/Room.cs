@@ -4,14 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AgentAspirateur.Environnement
+namespace AgentAspirateur
 {
     public class Room : IEquatable<Room>, IEquatable<Position>
     {
-        Position coordinate;
-        bool hasDust;
-        bool hasDiamond;
-        
+        public Position coordinate { get; set; }
+        public bool hasDust { get; set; }
+        public bool hasDiamond { get; set; }
+
+
         public Room(Position _coordinate,bool _hasDust,bool _hasDiamond)
         {
             this.coordinate = new Position(_coordinate);
