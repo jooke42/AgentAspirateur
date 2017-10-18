@@ -3,28 +3,29 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AgentAspirateur.Environnement;
 
 namespace AgentAspirateur.Agent
 {
     public class State
     {
         public Position robotPos;
-        public List<Position> dustOrDiamondPos;
+        public List<Room> dustOrDiamondPos;
 
         public State(){
-            this.dustOrDiamondPos = new List<Position>();
+            this.dustOrDiamondPos = new List<Room>();
         }
         public State(State _state) {
-            this.dustOrDiamondPos=new List<Position>(_state.dustOrDiamondPos);
+            this.dustOrDiamondPos=new List<Room>(_state.dustOrDiamondPos);
         }
 
         public State GenerateNewStateFromAction(Action action)
         {
             State newState;
-            if (this.dustOrDiamondPos.Contains(action.applyTo))
+            if (this.dustOrDiamondPos.Contains(new Room(action.applyTo)))
             {
                 newState = new State(this);
-                newState.dustOrDiamondPos.Remove(action.applyTo);
+                newState.dustOrDiamondPos.Remove(new Room(action.applyTo));
                 newState.robotPos = new Position(action.applyTo);
             }
             else
@@ -35,18 +36,16 @@ namespace AgentAspirateur.Agent
             return newState;
         }
 
-        public State(Position _robotPos , List<Tile>[][] map)
+        public State(Position _robotPos , Room[][] map)
         {
-            this.dustOrDiamondPos = new List<Position>();
+            this.dustOrDiamondPos = new List<Room>();
             this.robotPos = new Position(_robotPos);
             for (int i = map.Length -1; i >= 0; i--)
             {
                 for (int j = map[i].Length-1; j >= 0; j--)
                 {
-                    bool dust = map[i][j].Contains(Tile.DUST);
-                    bool diamond = map[i][j].Contains(Tile.DIAMOND);
-                    if (dust || diamond)
-                        dustOrDiamondPos.Add(new Position(i, j));
+                    if (!map[i][j].isClean())
+                        dustOrDiamondPos.Add(map[i][j]);
                 }
             }
         }
@@ -57,12 +56,10 @@ namespace AgentAspirateur.Agent
     public class Problem
     {
         public State initialState;
-        private List<Tile>[][] goal;
 
-        public Problem(State _initialState, List<Tile>[][] _goal)
+        public Problem(State _initialState)
         {
             this.initialState = _initialState;
-            this.goal = _goal;
         }
 
         public Boolean goalCompleted(State s)

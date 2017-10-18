@@ -64,6 +64,7 @@
     <Compile Include="Agent\Action.cs" />
     <Compile Include="Agent\PerformanceSensor.cs" />
     <Compile Include="Environnement\Performance.cs" />
+    <Compile Include="Environnement\Room.cs" />
     <Compile Include="TreeSearch\Problem.cs" />
     <Compile Include="TreeSearch\Asearch.cs" />
     <Compile Include="TreeSearch\UniformCostSearch.cs" />

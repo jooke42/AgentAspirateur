@@ -4,18 +4,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Collections;
+using AgentAspirateur.Environnement;
 
 namespace AgentAspirateur.Agent
 {
     public class DiamondSensor : Sensors
     {
         override
-         public Boolean check(int x, int y, List<Tile>[][] map)
+         public Boolean check(int x, int y, Room[][] map)
         {
-            return map[x][y].Contains(Tile.DIAMOND);
+            return map[x][y].getHasDiamond();
         }
         override
-        public List<Position> getPosition(List<Tile>[][] map)
+        public List<Position> getPosition(Room[][] map)
         {
             List<Position> position = new List<Position>();
 
@@ -23,7 +24,7 @@ namespace AgentAspirateur.Agent
             {                
                 for (int j = 0; j < map.GetLength(1); j++)
                 {
-                    if (map[i][j].Contains(Tile.DIAMOND))
+                    if (map[i][j].getHasDiamond())
                         position.Add(new Position(i, j));
 
                 }

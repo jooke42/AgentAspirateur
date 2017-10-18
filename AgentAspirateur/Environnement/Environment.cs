@@ -4,11 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Timers;
+using AgentAspirateur.Environnement;
 
 namespace AgentAspirateur
 {
-    public enum Tile { FLOOR, DUST, DIAMOND }
-
     public struct Size
     {
         public int width, height;
@@ -23,7 +22,7 @@ namespace AgentAspirateur
     {
         private Queue<string> events = new Queue<string>();
         public Position robot;
-        private List<Tile>[][] map;
+        private Room[][] map;
         Random rndDust = new Random();
         Random rndDiamond = new Random(9);
         Size sizeMap;
@@ -39,8 +38,8 @@ namespace AgentAspirateur
             _timerDust = new System.Timers.Timer(5000); //Updates every 2 sec
             _timerDust.Elapsed += new System.Timers.ElapsedEventHandler(OnTimedEventDust);
 
-           // _timerDiamond = new System.Timers.Timer(7000); //Updates every 2 sec
-          //  _timerDust.Elapsed += new System.Timers.ElapsedEventHandler(OnTimedEventDiamond);
+            _timerDiamond = new System.Timers.Timer(7000); //Updates every 2 sec
+            _timerDust.Elapsed += new System.Timers.ElapsedEventHandler(OnTimedEventDiamond);
 
            
 
@@ -52,13 +51,13 @@ namespace AgentAspirateur
         {
             this.sizeMap = new Size(10, 10);
             this.robot = new Position(5, 7);
-            this.map = new List<Tile>[sizeMap.width][];
+            this.map = new Room[sizeMap.width][];
             for (int i = 0; i < map.Length; i++)
             {
-                this.map[i] = new List<Tile>[sizeMap.height];
+                this.map[i] = new Room[sizeMap.height];
                 for (int j = 0; j < map[i].Length; j++)
                 {
-                    map[i][j] = new List<Tile>() { Tile.FLOOR };
+                    map[i][j] = new Room(new Position(i, j));
                 }
             }
 
@@ -79,16 +78,8 @@ namespace AgentAspirateur
         }
         public void start()
         {
-           map[2][2].Add(Tile.DUST);
-            map[2][1].Add(Tile.DUST);
-            map[2][3].Add(Tile.DUST);
-            
-
-           // map[8][1].Add(Tile.DUST);
-
-            //map[5][2].Add(Tile.DUST);
-             _timerDust.Start();
-            //_timerDiamond.Start();
+            _timerDust.Start();
+            _timerDiamond.Start();
 
             while (true)
             {
@@ -110,21 +101,21 @@ namespace AgentAspirateur
                         switch (action)
                         {
                             case "PICK":
-                                map[robot.x][robot.y].Remove(Tile.DIAMOND);
+                                map[robot.x][robot.y].setHasDiamond(false);
                                 performance.addAction("PICK");
                               
                             break;
                             case "VACUUM":
-                            if (map[robot.x][robot.y].Contains(Tile.DUST))
+                            if (map[robot.x][robot.y].getHasDust())
                             {
-                                map[robot.x][robot.y].Remove(Tile.DUST);
+                                map[robot.x][robot.y].setHasDust(false);
                                 performance.addAction("VACUUM DUST");
                                
                             }
 
-                            if (map[robot.x][robot.y].Contains(Tile.DIAMOND))
+                            if (map[robot.x][robot.y].getHasDiamond())
                             {
-                                map[robot.x][robot.y].Remove(Tile.DIAMOND);
+                                map[robot.x][robot.y].setHasDiamond(false);
                                 performance.addAction("VACUUM DIAMOND");
                               
                             }
@@ -132,7 +123,7 @@ namespace AgentAspirateur
                             break;
                             case "MOVE":
                                 move = parsedEvent[1];
-                                newPos = this.robot.getPositionInDirection(DirectionMethod.directionFromString(move));
+                                newPos = this.robot.getRoomInDirection(DirectionMethod.directionFromString(move)).getCoordinate();
                                  if (newPos.validPosition(this.sizeMap.width, this.sizeMap.height))
                                  {
                                     robot = newPos;
@@ -141,7 +132,7 @@ namespace AgentAspirateur
                            
                             break;
                         }
-                    Thread.Sleep(500);
+                    //Thread.Sleep(500);
                     
                 }
                 
@@ -161,9 +152,9 @@ namespace AgentAspirateur
             {
                 int x = rndDust.Next(0, 10);
                 int y = rndDust.Next(0, 10);
-                if (!map[x][y].Contains(Tile.DUST))
+                if (!map[x][y].getHasDust())
                 {
-                    map[x][y].Add(Tile.DUST);
+                    map[x][y].setHasDust(true);
                     nbToCreate--;
                     Console.WriteLine("generating dirt at (" + x + ";" + y + ")");
                     performance.addAction("ADD DUST");
@@ -178,9 +169,9 @@ namespace AgentAspirateur
             {
                 int x = rndDiamond.Next(0, 10);
                 int y = rndDiamond.Next(0, 10);
-                if (!map[x][y].Contains(Tile.DIAMOND)) 
+                if (!map[x][y].getHasDiamond()) 
                 {
-                    map[x][y].Add(Tile.DIAMOND);
+                    map[x][y].setHasDiamond(false);
                     nbToCreate--;
                     Console.WriteLine("generating Diamond at (" + x + ";" + y + ")");
                     performance.addAction("ADD DIAMOND");
@@ -189,16 +180,15 @@ namespace AgentAspirateur
             }
         }
 
-        public List<Tile>[][] getMap()
+        public Room[][] getMap()
         {
             return this.map;
         }
 
         public void addEvent(String _event)
         {
-           // if(!this.events.Contains(_event))
+            if(!this.events.Contains(_event))
                 this.events.Enqueue(_event);
-            Thread.Sleep(500);
         }
 
 

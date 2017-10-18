@@ -24,11 +24,6 @@ namespace AgentAspirateur.Agent
                         move(action, robot);
                         vacuumDust(robot.x, robot.y);
                         break;
-
-                    case ActionType.MOVE:
-                        move(action, robot);
-                        Console.WriteLine("move to" + action.applyTo.x + " " + action.applyTo.y);
-                        break;
                 }
             }
         }

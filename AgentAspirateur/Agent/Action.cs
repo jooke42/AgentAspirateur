@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AgentAspirateur.Agent
 {
-    public enum ActionType { MOVE, VACUUM, PICK }
+    public enum ActionType { PICK_VACUUM, VACUUM, PICK }
 
     public class Action : IEquatable<Action>
     {
