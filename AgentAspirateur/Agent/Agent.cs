@@ -60,6 +60,7 @@ namespace AgentAspirateur.Agent
             while (Alive)
             {
                 updateBelief();
+                Thread.Sleep(500);
                 if (goalCompleted())
                     intention.Clear();
 
@@ -70,6 +71,7 @@ namespace AgentAspirateur.Agent
                     if(intention.Count() == 0)
                     {
                         updateBelief();
+                        
                         Problem p = new Problem(new State(position, belief), desire);
                         //Choisit une action
                         foreach(Action a in TreeSearch(p, new Asearch(p)).ToList())
