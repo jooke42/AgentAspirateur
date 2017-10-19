@@ -39,9 +39,10 @@ namespace AgentAspirateur.Agent
         public int numberOfAction;
         private int lastPerformance;
         private readonly List<int> performances = new List<int>();       
-        private bool _deltaNbAction = false;
-        private const double alpha = 1.5; 
+        private bool nbaction = false;
+        private double a = 1.8;
 
+       
 
 
         public Agent(Environment environment)
@@ -85,7 +86,9 @@ namespace AgentAspirateur.Agent
                 
                //Apprend pour améliorer sa performance
                learn();
-              
+             
+
+
             }
 
 
@@ -208,6 +211,7 @@ namespace AgentAspirateur.Agent
         }
 
         //Apprentissage
+      
         private void learn()
         {
             int max = 100;
@@ -217,46 +221,42 @@ namespace AgentAspirateur.Agent
             }
             int currentPerf = this.environment.getPerformance();
             performances.Insert(0, currentPerf - lastPerformance);
-            lastPerformance = currentPerf;
-
-          
-
+            lastPerformance = currentPerf;                     
             double sum = 0;
 
             for (int i= 0; i< performances.Count; i++)            
             {               
-                sum += (double)performances[i] / (alpha * Math.Exp((double)i));               
-            }
+                sum += (double)performances[i] / (a * Math.Exp((double)i));               
+            }                   
 
-            if (performances.Count == 1) { numberOfAction--; }
-
-            else if (sum < 0 )
+            if (sum < 0 )
             {
-                if (_deltaNbAction)
+                if (nbaction)
                     numberOfAction++; 
                 else                
                    if (numberOfAction > 1) 
                         numberOfAction--;                  
-            }
-
-
-            else if (sum > 0 )
+            }        
+            else
             {
-                if (_deltaNbAction)
+                if (nbaction)
                 {
                     if (numberOfAction > 1) {
                         numberOfAction--;
-                        _deltaNbAction = false;
+                        nbaction = false;
                     }
                 }
                 else
                 {
                     numberOfAction++;
-                    _deltaNbAction = true;
+                    nbaction = true;
                 }
             }          
             
         }
+
+  
+
 
         //Nettoie la liste d'intention de l'agent
         public void clearIntention()

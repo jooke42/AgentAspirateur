@@ -20,7 +20,7 @@ namespace AgentAspirateur.TreeSearch
 
             while( fringe.Count() != 0)
             {
-                Node node = fringe.First();
+                Node node = fringe.Max();
                 fringe.Remove(node);
                 if (p.goalCompleted(node.state))
                     return node;

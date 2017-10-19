@@ -98,7 +98,7 @@ namespace AgentAspirateur
             listDustDiamond.ItemsSource = agent.getBelief().dustOrDiamondPos;
             apprentissage.Text = agent.numberOfAction.ToString();
             performance.Text = environment.getPerformance().ToString();
-            strategy.Text = agent.uniformAlgo ? "Uniform Cost Search" : "A start";
+            strategy.Text = agent.uniformAlgo ? "Uniform Cost Search" : "A star";
 
         }
 
