@@ -29,6 +29,7 @@ namespace AgentAspirateur
         Size sizeMap;
         private readonly System.Timers.Timer _timerDust;
         private readonly System.Timers.Timer _timerDiamond;
+        public String lastAction;
        
 
         //Mesure de performance 
@@ -92,6 +93,7 @@ namespace AgentAspirateur
                 while (events.Count != 0)
                 {                  
                     string evt = (string) events.Dequeue();
+                    lastAction = evt;
                   /**
                          * PICK
                          * VACUUM
@@ -218,6 +220,8 @@ namespace AgentAspirateur
             if (!this.events.Contains(_event))
                 this.events.Enqueue(_event);
         }
+
+      
 
 
     }

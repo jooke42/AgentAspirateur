@@ -199,8 +199,8 @@ namespace AgentAspirateur.Agent
         {
             HashSet<Room> list = new HashSet<Room>();
             //Met à jour sa croyance sur sa position et sur l'état de l'environnement
-            List<Room> dust = dustSensors.getPosition(MainWindow.environment.getMap());
-            List<Room> diamond = diamondSensor.getPosition(MainWindow.environment.getMap());
+            List<Room> dust = dustSensors.getPosition(environment.getMap());
+            List<Room> diamond = diamondSensor.getPosition(environment.getMap());
             foreach(Room r in dust)
             {
                 list.Add(r);
@@ -210,7 +210,7 @@ namespace AgentAspirateur.Agent
                 list.Add(r);
             }
 
-            belief = new State(MainWindow.environment.robot, list.ToList());
+            belief = new State(environment.robot, list.ToList());
         }
 
         //Apprentissage      

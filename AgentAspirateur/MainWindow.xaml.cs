@@ -99,6 +99,7 @@ namespace AgentAspirateur
             apprentissage.Text = agent.bestFreqExploration.ToString();
             performance.Text = environment.getPerformance().ToString();
             strategy.Text = agent.uniformAlgo ? "Uniform Cost Search" : "A star";
+            action.Text = environment.lastAction;
 
         }
 
