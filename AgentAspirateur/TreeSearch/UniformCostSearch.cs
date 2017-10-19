@@ -21,12 +21,15 @@ namespace AgentAspirateur.TreeSearch
             while( fringe.Count() != 0)
             {
                 Node node = fringe.Max();
-                fringe.Remove(node);
-                if (p.goalCompleted(node.state))
-                    return node;
+                if (node != null)
+                {
+                    fringe.Remove(node);
+                    if (p.goalCompleted(node.state))
+                        return node;
 
-                foreach(Node n in node.expand(p))
-                    fringe.Add(n);
+                    foreach (Node n in node.expand(p))
+                        fringe.Add(n);
+                }
             }
 
             return null;          

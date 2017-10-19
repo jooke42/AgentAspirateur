@@ -32,10 +32,13 @@ namespace AgentAspirateur
        
 
         //Mesure de performance 
-        private int malusDiamondVacuumed = 5;
-        private const int newDust = 1;
-        private const int newDiamond = 1;       
-        private int performanceScore = 0;
+        private int malusDiamondVacuumed = 10;
+        private const int dust = 10;
+        private const int diamond = 10;
+        private const int newDustAndDiamond = 2;
+       
+        private const int cost = 1;
+        private int performanceScore = 100;
      
 
 
@@ -105,7 +108,8 @@ namespace AgentAspirateur
                             if (map[robot.x][robot.y].getHasDiamond())
                             {
                                 map[robot.x][robot.y].setHasDiamond(false);
-                                performanceScore -= newDiamond;
+                                performanceScore += diamond;
+                                performanceScore -= cost;
 
                             }          
                             break;
@@ -114,14 +118,16 @@ namespace AgentAspirateur
                             if (map[robot.x][robot.y].getHasDust())
                             {
                                 map[robot.x][robot.y].setHasDust(false);                             
-                                performanceScore -= newDust;
-                              
+                                performanceScore += dust;
+                                performanceScore -= cost;
+
                             }
                             if (map[robot.x][robot.y].getHasDiamond())
                             {
                                 map[robot.x][robot.y].setHasDiamond(false);
-                                performanceScore += malusDiamondVacuumed;
-                                
+                                performanceScore -= malusDiamondVacuumed;
+                                performanceScore -= cost;
+
                             }                            
                             break;
 
@@ -130,9 +136,10 @@ namespace AgentAspirateur
                                 newPos = this.robot.getRoomInDirection(DirectionMethod.directionFromString(move)).getCoordinate();
                                  if (newPos.validPosition(this.sizeMap.width, this.sizeMap.height))
                                  {
-                                    robot = newPos;
-                                    
-                                 }                           
+                                     robot = newPos;
+                                     performanceScore -= cost;
+
+                                }                           
                             break;
                         }
                     Thread.Sleep(500);
@@ -155,7 +162,7 @@ namespace AgentAspirateur
                     map[x][y].setHasDust(true);
                     nbToCreate--;
                     Console.WriteLine("generating dirt at (" + x + ";" + y + ")");
-                    performanceScore += newDust;                   
+                    performanceScore -= newDustAndDiamond;                   
                    
                 }
             }
@@ -174,7 +181,7 @@ namespace AgentAspirateur
                     map[x][y].setHasDiamond(true);
                     nbToCreate--;
                     Console.WriteLine("generating Diamond at (" + x + ";" + y + ")");
-                    performanceScore += newDiamond;                   
+                    performanceScore -= newDustAndDiamond;
                 }
             }
         }

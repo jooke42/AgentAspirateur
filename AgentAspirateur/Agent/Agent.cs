@@ -36,13 +36,15 @@ namespace AgentAspirateur.Agent
          * Variable d'apprentissag         
          * 
          * */
-        public int numberOfAction;
+        public int bestFreqExploration;
+        public int randomFreqExploration;
         private int lastPerformance;
-        private readonly List<int> performances = new List<int>();       
-        private bool isMoving = false;
-        private double a = 1.8;
+        private int lastRandomPerformance;    
+        private static int measure = 3;
+        private int leftToDo = 0;
+        private int bestPerformance;
+        private int lookForOtherFreq;
 
-       
 
 
         public Agent(Environment environment)
@@ -56,9 +58,12 @@ namespace AgentAspirateur.Agent
             dustSensors = new DustSensor();
             diamondSensor = new DiamondSensor();
             Alive = true;
-            numberOfAction = 5;           
+            bestFreqExploration = 10;           
             intention = new Queue<SimpleActionType>();
             uniformAlgo = true;
+            randomFreqExploration = rdm.Next(1, 10);
+            lookForOtherFreq = 3;
+            bestPerformance = this.environment.getPerformance();
         }
           
 
@@ -130,8 +135,8 @@ namespace AgentAspirateur.Agent
                 foreach (Action action in TreeSearch(p, strategy).ToList())
                 {
                     foreach (SimpleActionType simpleAction in action.generateSimpleAction(robotIterationPos))
-                    {
-                        intention.Enqueue(simpleAction);
+                    {                       
+                            intention.Enqueue(simpleAction);
                     }                        
                 }
             }
@@ -147,7 +152,7 @@ namespace AgentAspirateur.Agent
             while (intention.Count != 0 && !needsToStop)
             {
                 countAction++;
-                if (countAction == numberOfAction)
+                if (countAction == bestFreqExploration)
                    {
                         needsToStop = true;
                    }
@@ -171,8 +176,7 @@ namespace AgentAspirateur.Agent
 
             while (endNode != null)
             {
-
-                if (endNode.action != null)
+                if (endNode.action != null) 
                     actionList.Push(endNode.action);
                 endNode = endNode.parentNode;
             }
@@ -210,54 +214,52 @@ namespace AgentAspirateur.Agent
             belief = new State(MainWindow.environment.robot, list.ToList());
         }
 
-        //Apprentissage
-      
+        //Apprentissage      
         private void learn()
         {
-            
-            int currentPerf = this.environment.getPerformance();
-            performances.Insert(0, currentPerf - lastPerformance);
-            lastPerformance = currentPerf;                     
-            double sum = somme(performances);                          
-
-            if (sum < 0)
-            {
-                if (isMoving)
-                    numberOfAction++; 
-                else                
-                   if (numberOfAction > 1) 
-                        numberOfAction--;                  
-            }        
-            else
-            {
-                if (isMoving && numberOfAction > 0)
-                {
-                        numberOfAction--;
-                        isMoving = false;
+           
+            bool changeFreq = false;            
+                                
+           if (leftToDo < measure)
+                  addMeasure();
                     
-                }
+           lastPerformance = environment.getPerformance();
+           leftToDo++;
+
+
+
+            if (leftToDo == measure)
+            {
+                //Random freq 
+                if (bestPerformance < lastRandomPerformance)
+                    updateFrequencyAndPerf(randomFreqExploration, lastRandomPerformance);
+
                 else
-                {
-                    isMoving = true;
-                    numberOfAction++;
-                   
-                }
-            }          
+                    changeFreq = true;
+
+
+                if (changeFreq)
+                    randomFreqExploration = rdm.Next(1, 10);
+
+                leftToDo = 0;
+
+            }
+
             
         }
 
 
-        private double somme(List<int> list)
-        {
-            double sum = 0;
-            for (int i = 0; i < performances.Count; i++)
-            {
-                sum += (double)performances[i] / (a * Math.Exp((double)i));
-            }
-            return sum;
+        private void addMeasure()
+        {          
+            lastRandomPerformance += this.environment.getPerformance() - lastPerformance;
         }
-  
 
+        private void updateFrequencyAndPerf(int freq, int perf)
+        {
+            bestFreqExploration = freq;
+            bestPerformance = perf;
+        }
+        
 
         //Nettoie la liste d'intention de l'agent
         public void clearIntention()
