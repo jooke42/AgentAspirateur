@@ -90,8 +90,7 @@ namespace AgentAspirateur
             {
                 Thread.Sleep(500);               
                 while (events.Count != 0)
-                {
-                   
+                {                  
                     string evt = (string) events.Dequeue();
                   /**
                          * PICK

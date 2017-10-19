@@ -43,7 +43,7 @@ namespace AgentAspirateur.Agent
         private static int measure = 3;
         private int leftToDo = 0;
         private int bestPerformance;
-        private int lookForOtherFreq;
+   
 
 
 
@@ -61,8 +61,7 @@ namespace AgentAspirateur.Agent
             bestFreqExploration = 10;           
             intention = new Queue<SimpleActionType>();
             uniformAlgo = true;
-            randomFreqExploration = rdm.Next(1, 10);
-            lookForOtherFreq = 3;
+            randomFreqExploration = rdm.Next(1, 10);            
             bestPerformance = this.environment.getPerformance();
         }
           
