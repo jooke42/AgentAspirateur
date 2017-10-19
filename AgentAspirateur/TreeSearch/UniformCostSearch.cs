@@ -10,6 +10,7 @@ namespace AgentAspirateur.TreeSearch
 {
     class UniformCostSearch : SearchStrategy
     {
+        //Renvoie le meilleur noeud à prendre
         public Node SearchPath(Problem p)
         {
             SortedSet<Node> fringe = new SortedSet<Node>();

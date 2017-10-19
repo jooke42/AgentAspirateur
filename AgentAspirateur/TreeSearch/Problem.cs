@@ -48,6 +48,13 @@ namespace AgentAspirateur.Agent
             }
         }
 
+        public State(Position _robotPos, List<Room> dustAndDiamond)
+        {
+            this.dustOrDiamondPos = new List<Room>();
+            this.robotPos = new Position(_robotPos);
+            this.dustOrDiamondPos.AddRange(dustAndDiamond);
+        }
+
 
     }
     

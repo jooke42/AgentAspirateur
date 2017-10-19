@@ -10,7 +10,7 @@ namespace AgentAspirateur.Agent
     {
 
         public abstract Boolean check(int x, int y, Room[][] map);
-        public abstract List<Position> getPosition(Room[][] map);
+        public abstract List<Room> getPosition(Room[][] map);
 
     }
 }

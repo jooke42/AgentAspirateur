@@ -26,6 +26,12 @@ namespace AgentAspirateur
             this.hasDiamond = false;
             this.hasDust = false;
         }
+        public Room(Room r)
+        {
+            this.coordinate = new Position(r.coordinate);
+            this.hasDiamond = r.hasDiamond;
+            this.hasDust = r.hasDust;
+        }
         public Room(int _coordinateX, int _coordinateY)
         {
             this.coordinate = new Position(_coordinateX,_coordinateY);

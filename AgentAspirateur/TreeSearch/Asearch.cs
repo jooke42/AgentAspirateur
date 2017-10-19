@@ -19,6 +19,8 @@ namespace AgentAspirateur.TreeSearch
             this.problem = _problem;          
         }
 
+
+        //Trouve le meilleur noeud
         public Node SearchPath(Problem p)
         {
             List<Node> fringe = new List<Node>();
@@ -43,13 +45,11 @@ namespace AgentAspirateur.TreeSearch
             }
 
             return null;
-             
             
         }
+             
 
-      
-
-
+        //Renvoi la meilleure heuristic
         private int findBestNode(Node start)
         {
             int minHeuristic = 500;
@@ -67,17 +67,16 @@ namespace AgentAspirateur.TreeSearch
             return minHeuristic;
         }
 
-
+        //Calcul l'heuristic
         private int computeHeuristic(Node start, Position goal)
         {
             //Compute manhattan Distance between node stard and goal
-            int manhattanDistance = computeManhattanDistance(start.state.robotPos, goal);
-            int heuristic = computeNumberOfDustOrDiamond(manhattanDistance, goal);
-            return manhattanDistance + start.state.dustOrDiamondPos.Count;         
+            int manhattanDistance = computeManhattanDistance(start.state.robotPos, goal);           
+            return manhattanDistance + start.state.dustOrDiamondPos.Count;        
 
         }
 
-
+        //Distance de manhattan
         private int computeManhattanDistance(Position startPoint, Position goalPoint)
         {
             int absX = Math.Abs(goalPoint.x - startPoint.x);
@@ -86,36 +85,8 @@ namespace AgentAspirateur.TreeSearch
             return manhattanDistance;
         }
         
-
-     
-       
-        private int computeNumberOfDustOrDiamond(int manhattanDistance, Position p)
-        {            
-
-            //North 
-            
-            int count = manhattanDistance;
-            if (problem.initialState.dustOrDiamondPos.Contains(p.getRoomInDirection(direction.NORTH)) && p.getRoomInDirection(direction.NORTH).getCoordinate().validPosition())
-                count--;
-            if (problem.initialState.dustOrDiamondPos.Contains(p.getRoomInDirection(direction.EAST)) && p.getRoomInDirection(direction.EAST).getCoordinate().validPosition())
-                count--;
-            if (problem.initialState.dustOrDiamondPos.Contains(p.getRoomInDirection(direction.WEST)) && p.getRoomInDirection(direction.WEST).getCoordinate().validPosition())
-                count--;
-            if (problem.initialState.dustOrDiamondPos.Contains(p.getRoomInDirection(direction.SOUTH)) && p.getRoomInDirection(direction.WEST).getCoordinate().validPosition())
-                count--;
-            if (problem.initialState.dustOrDiamondPos.Contains(p.getRoomInDirection(direction.SE)) && p.getRoomInDirection(direction.SE).getCoordinate().validPosition())
-                count--;
-            if (problem.initialState.dustOrDiamondPos.Contains(p.getRoomInDirection(direction.SW)) && p.getRoomInDirection(direction.SW).getCoordinate().validPosition())
-                count--;
-            if (problem.initialState.dustOrDiamondPos.Contains(p.getRoomInDirection(direction.NE)) && p.getRoomInDirection(direction.NE).getCoordinate().validPosition())
-                count--;
-            if (problem.initialState.dustOrDiamondPos.Contains(p.getRoomInDirection(direction.NW)) && p.getRoomInDirection(direction.NW).getCoordinate().validPosition())
-                count--;
-            return count;
-            
-        }
-
-
+        
+        // Permet de comparer deux calcul de fonction d'évaluation
         private int Compare(Node n1, Node n2)
         {
             int eval1 = n1.getHeuristic() + n1.pathCost;

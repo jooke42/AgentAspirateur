@@ -15,16 +15,16 @@ namespace AgentAspirateur.Agent
             return map[x][y].hasDiamond;
         }
         override
-        public List<Position> getPosition(Room[][] map)
+        public List<Room> getPosition(Room[][] map)
         {
-            List<Position> position = new List<Position>();
+            List<Room> position = new List<Room>();
 
-            for (int i = 0; i < map.GetLength(0); i++)
+            for (int i = 0; i < map.Length ; i++)
             {                
-                for (int j = 0; j < map.GetLength(1); j++)
+                for (int j = 0; j < map[i].Length ; j++)
                 {
                     if (map[i][j].hasDiamond)
-                        position.Add(new Position(i, j));
+                        position.Add(new Room(map[i][j]));
 
                 }
             }

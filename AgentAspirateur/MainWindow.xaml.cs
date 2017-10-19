@@ -98,8 +98,10 @@ namespace AgentAspirateur
             listDustDiamond.ItemsSource = agent.getBelief().dustOrDiamondPos;
             apprentissage.Text = agent.numberOfAction.ToString();
             performance.Text = environment.getPerformance().ToString();
+            strategy.Text = agent.uniformAlgo ? "Uniform Cost Search" : "A start";
 
         }
+
         private void Update()
         {
             Room[][] map = environment.getMap();
@@ -136,5 +138,10 @@ namespace AgentAspirateur
 
         }
 
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            agent.clearIntention();
+            agent.uniformAlgo =  !agent.uniformAlgo;
+        }
     }
 }

@@ -12,25 +12,35 @@ namespace AgentAspirateur.Agent
     
     public class Agent
     {
-         
+        /* etat mental : BDI
+         * Le desire étant une pièce sans poussière et diamand
+         */
         private Queue<SimpleActionType> intention;
         private State belief;
-        private Environment environment;
-        private Random rdm= new Random();
-        public DustSensor dustSensors;   
-        public DiamondSensor diamondSensor;
+
+        /*
+         * Environnement de l'agent
+         * avec ses capteurs et effecteurs
+         
+         */
+        private Environment environment;       
+        public Sensors dustSensors;   
+        public Sensors diamondSensor;
+
+
         Boolean Alive;
-        private int speed = 20;
+        public bool uniformAlgo;
+        private Random rdm = new Random();
 
-
-        //learning
+        /*
+         * Variable d'apprentissag         
+         * 
+         * */
         public int numberOfAction;
         private int lastPerformance;
-        private readonly List<int> performances = new List<int>();
-       
+        private readonly List<int> performances = new List<int>();       
         private bool _deltaNbAction = false;
         private const double alpha = 1.5; 
-
 
 
 
@@ -45,9 +55,9 @@ namespace AgentAspirateur.Agent
             dustSensors = new DustSensor();
             diamondSensor = new DiamondSensor();
             Alive = true;
-            numberOfAction = 5;           
+            numberOfAction = 10;           
             intention = new Queue<SimpleActionType>();
-
+            uniformAlgo = true;
         }
           
 
@@ -56,19 +66,26 @@ namespace AgentAspirateur.Agent
             CycleLife();
         }
 
+        /*
+         * Thread de l'agent
+         * */
+
         private void CycleLife()
         {
             
-            updateBelief();
-           
+            updateBelief();           
 
             while (Alive)
             {
+               // Réfléchit et planifie ses actions
                think();
-               act();                            
-               learn();
-               Thread.Sleep(1000 / speed);
+
+               //Execute ses actions
+               act();         
                 
+               //Apprend pour améliorer sa performance
+               learn();
+              
             }
 
 
@@ -76,6 +93,9 @@ namespace AgentAspirateur.Agent
 
         private void think()
         {
+            /*            
+             *   Si le manoir est propre, pas besoin de faire d'exploration          
+             * */
             if (goalCompleted())
             {
                 intention.Clear();
@@ -89,14 +109,27 @@ namespace AgentAspirateur.Agent
                 Problem p = new Problem(belief);
                 //Choisit une action
                 Position robotIterationPos = new Position(this.belief.robotPos);
-                foreach (Action action in TreeSearch(p, new Asearch(p)).ToList())
+
+                /*
+                 * Changement de stratégie quand on clique sur le boutton switch strategy
+                 * 
+                 */
+                SearchStrategy strategy;
+                if (uniformAlgo)
+                    strategy = new UniformCostSearch();
+                else
+                    strategy = new Asearch(p);
+
+                /*
+                 * Exploration et planification de ses intentions
+                 * 
+                 */
+                foreach (Action action in TreeSearch(p, strategy).ToList())
                 {
                     foreach (SimpleActionType simpleAction in action.generateSimpleAction(robotIterationPos))
                     {
                         intention.Enqueue(simpleAction);
-                    }
-
-                        
+                    }                        
                 }
             }
             
@@ -106,6 +139,8 @@ namespace AgentAspirateur.Agent
         {
             bool needsToStop = false;
             int countAction = 0;
+
+            //Permet d'effectuer autant de mouvement que prévu par l'apprentissage
             while (intention.Count != 0 && !needsToStop)
             {
                 countAction++;
@@ -121,15 +156,13 @@ namespace AgentAspirateur.Agent
             }
         }
 
-
-        private void displayBelief()
-        {
-            Console.WriteLine("Belief du robot: " + this.belief.robotPos.x + " " + this.belief.robotPos.y);
-           // belief.dustOrDiamondPos.ToString();
-
-        }
+     
         private Stack<Action> TreeSearch(Problem p,SearchStrategy strategy)
         {
+            /*
+             * Arbre de recherche permet de savoir quoi faire
+             * 
+             */
             Stack<Action> actionList = new Stack<Action>();
             Node endNode = strategy.SearchPath(p);
 
@@ -158,10 +191,23 @@ namespace AgentAspirateur.Agent
       
         private void updateBelief()
         {
-           
-            belief = new State(MainWindow.environment.robot, MainWindow.environment.getMap());
+            HashSet<Room> list = new HashSet<Room>();
+            //Met à jour sa croyance sur sa position et sur l'état de l'environnement
+            List<Room> dust = dustSensors.getPosition(MainWindow.environment.getMap());
+            List<Room> diamond = diamondSensor.getPosition(MainWindow.environment.getMap());
+            foreach(Room r in dust)
+            {
+                list.Add(r);
+            }
+            foreach (Room r in diamond)
+            {
+                list.Add(r);
+            }
+
+            belief = new State(MainWindow.environment.robot, list.ToList());
         }
 
+        //Apprentissage
         private void learn()
         {
             int max = 100;
@@ -173,6 +219,8 @@ namespace AgentAspirateur.Agent
             performances.Insert(0, currentPerf - lastPerformance);
             lastPerformance = currentPerf;
 
+          
+
             double sum = 0;
 
             for (int i= 0; i< performances.Count; i++)            
@@ -182,18 +230,17 @@ namespace AgentAspirateur.Agent
 
             if (performances.Count == 1) { numberOfAction--; }
 
-            else if (sum < 0 && Math.Abs(sum) > 1)
+            else if (sum < 0 )
             {
                 if (_deltaNbAction)
                     numberOfAction++; 
                 else                
                    if (numberOfAction > 1) 
                         numberOfAction--;                  
-                
             }
 
 
-            else if (sum > 0 && Math.Abs(sum) > 1)
+            else if (sum > 0 )
             {
                 if (_deltaNbAction)
                 {
@@ -209,6 +256,12 @@ namespace AgentAspirateur.Agent
                 }
             }          
             
+        }
+
+        //Nettoie la liste d'intention de l'agent
+        public void clearIntention()
+        {
+            this.intention.Clear();
         }
         
     }

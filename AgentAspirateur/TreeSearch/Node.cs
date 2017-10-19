@@ -99,6 +99,7 @@ namespace AgentAspirateur.Agent
             return childNodes;
         }
 
+        //Comparaison entre deux noeuds
         public int CompareTo(Node other)
         {
             if (this.pathCost > other.pathCost) return -1;
