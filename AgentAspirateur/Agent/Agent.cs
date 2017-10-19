@@ -39,7 +39,7 @@ namespace AgentAspirateur.Agent
         public int numberOfAction;
         private int lastPerformance;
         private readonly List<int> performances = new List<int>();       
-        private bool nbaction = false;
+        private bool isMoving = false;
         private double a = 1.8;
 
        
@@ -56,7 +56,7 @@ namespace AgentAspirateur.Agent
             dustSensors = new DustSensor();
             diamondSensor = new DiamondSensor();
             Alive = true;
-            numberOfAction = 10;           
+            numberOfAction = 5;           
             intention = new Queue<SimpleActionType>();
             uniformAlgo = true;
         }
@@ -214,24 +214,15 @@ namespace AgentAspirateur.Agent
       
         private void learn()
         {
-            int max = 100;
-            if (performances.Count == max)
-            {
-                performances.RemoveAt(max - 1);
-            }
+            
             int currentPerf = this.environment.getPerformance();
             performances.Insert(0, currentPerf - lastPerformance);
             lastPerformance = currentPerf;                     
-            double sum = 0;
+            double sum = somme(performances);                          
 
-            for (int i= 0; i< performances.Count; i++)            
-            {               
-                sum += (double)performances[i] / (a * Math.Exp((double)i));               
-            }                   
-
-            if (sum < 0 )
+            if (sum < 0)
             {
-                if (nbaction)
+                if (isMoving)
                     numberOfAction++; 
                 else                
                    if (numberOfAction > 1) 
@@ -239,22 +230,32 @@ namespace AgentAspirateur.Agent
             }        
             else
             {
-                if (nbaction)
+                if (isMoving && numberOfAction > 0)
                 {
-                    if (numberOfAction > 1) {
                         numberOfAction--;
-                        nbaction = false;
-                    }
+                        isMoving = false;
+                    
                 }
                 else
                 {
+                    isMoving = true;
                     numberOfAction++;
-                    nbaction = true;
+                   
                 }
             }          
             
         }
 
+
+        private double somme(List<int> list)
+        {
+            double sum = 0;
+            for (int i = 0; i < performances.Count; i++)
+            {
+                sum += (double)performances[i] / (a * Math.Exp((double)i));
+            }
+            return sum;
+        }
   
 
 
