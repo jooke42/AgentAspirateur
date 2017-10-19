@@ -30,7 +30,6 @@
                 </ListView.View>
             </ListView>
             <Label Content="Nombre d'actions avant mise à jour du belief" HorizontalAlignment="Left" Margin="10,285,0,0" VerticalAlignment="Top"/>
-            <TextBlock HorizontalAlignment="Left" Margin="112,59,0,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top"/>
             <TextBlock x:Name="apprentissage" HorizontalAlignment="Left" Margin="260,290,0,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" RenderTransformOrigin="0.378,0.042" Width="67"/>
             <Label Content="Score de performance" HorizontalAlignment="Left" Margin="128,306,0,0" VerticalAlignment="Top"/>
             <TextBlock x:Name="performance" HorizontalAlignment="Left" Margin="260,311,0,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" RenderTransformOrigin="0.378,0.042" Width="67"/>
