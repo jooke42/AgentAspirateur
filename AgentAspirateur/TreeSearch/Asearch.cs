@@ -12,14 +12,8 @@ namespace AgentAspirateur.TreeSearch
    
     class Asearch : SearchStrategy
     {
-        Problem problem;
+        
        
-        public Asearch(Problem _problem)
-        {
-            this.problem = _problem;          
-        }
-
-
         //Trouve le meilleur noeud
         public Node SearchPath(Problem p)
         {

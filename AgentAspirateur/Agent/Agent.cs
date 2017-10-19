@@ -126,7 +126,7 @@ namespace AgentAspirateur.Agent
                 if (uniformAlgo)
                     strategy = new UniformCostSearch();
                 else
-                    strategy = new Asearch(p);
+                    strategy = new Asearch();
 
                 /*
                  * Exploration et planification de ses intentions
